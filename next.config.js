@@ -1,11 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ['res.cloudinary.com'],
-  },
-  experimental: {
-    serverActions: true,
-  }
+  // Server actions default active hain, experimental hata diya
 };
 
 module.exports = nextConfig;
