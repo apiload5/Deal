@@ -1,0 +1,63 @@
+deal-online/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── (dashboard)/
+│   │   ├── dashboard/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── add-property/
+│   │   └── page.tsx
+│   ├── properties/
+│   │   ├── page.tsx
+│   │   └── [id]/
+│   │       └── page.tsx
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── callback/
+│   │   │       └── route.ts
+│   │   └── properties/
+│   │       └── route.ts
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── input.tsx
+│   │   ├── select.tsx
+│   │   ├── label.tsx
+│   │   ├── skeleton.tsx
+│   │   └── toast.tsx
+│   ├── PropertyCard.tsx
+│   ├── SearchBar.tsx
+│   ├── TikTokPlayer.tsx
+│   ├── ImageUpload.tsx
+│   ├── WhatsAppButton.tsx
+│   ├── Map.tsx
+│   ├── PropertyFilters.tsx
+│   ├── PropertyForm.tsx
+│   └── CityGrid.tsx
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts
+│   │   └── server.ts
+│   ├── utils.ts
+│   └── validations.ts
+├── hooks/
+│   ├── useAuth.ts
+│   └── useProperties.ts
+├── store/
+│   └── useStore.ts
+├── types/
+│   └── index.ts
+├── public/
+│   └── images/
+├── .env.local
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
