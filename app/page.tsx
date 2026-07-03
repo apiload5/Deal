@@ -5,15 +5,13 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { CityGrid } from '@/components/CityGrid'
 import { createServerClient } from '@/lib/supabase/server'
 import { Skeleton } from '@/components/ui/skeleton'
-// YEH ADD KARO - Button import
 import { Button } from '@/components/ui/button'
 
-export const revalidate = 3600 // ISR
+export const revalidate = 3600
 
 export default async function HomePage() {
   const supabase = createServerClient()
   
-  // Fetch featured properties
   const { data: featuredProperties } = await supabase
     .from('properties')
     .select(`
@@ -25,7 +23,6 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
     .limit(6)
 
-  // Fetch cities
   const { data: cities } = await supabase
     .from('cities')
     .select('*')
@@ -34,7 +31,6 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -49,7 +45,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Properties */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Featured Properties</h2>
@@ -70,7 +65,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Cities Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Popular Cities</h2>
