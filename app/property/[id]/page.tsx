@@ -6,9 +6,10 @@ import { Map } from '@/components/Map'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { createServerClient } from '@/lib/supabase/server'
 import { ChevronLeft, ChevronRight, Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+// YEH DEKHO - Button import hai?
+import { Button } from '@/components/ui/button'  // ← YEH HONA CHAHIYE
 
-export const revalidate = 3600 // ISR
+export const revalidate = 3600
 
 interface PageProps {
   params: {
@@ -67,14 +68,12 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      {/* Title */}
       <h1 className="text-3xl md:text-4xl font-bold mb-2">{property.title}</h1>
       <div className="flex items-center gap-2 text-gray-600 mb-6">
         <MapPin className="w-4 h-4" />
         <span>{property.city?.name}, {property.address}</span>
       </div>
 
-      {/* Image Gallery */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div className="relative h-[400px] md:h-[500px] rounded-xl overflow-hidden">
           {property.images && property.images.length > 0 ? (
@@ -107,7 +106,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
-          {/* Price and Details */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
               <span className="text-3xl font-bold text-primary">
@@ -143,13 +141,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Description */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Description</h2>
             <p className="text-gray-700 whitespace-pre-wrap">{property.description}</p>
           </div>
 
-          {/* Map */}
           {property.lat && property.lng && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Location</h2>
@@ -157,7 +153,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* TikTok Video */}
           {property.tiktok_video_url && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Video Tour</h2>
@@ -166,7 +161,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           <div className="bg-white rounded-xl shadow-md p-6 sticky top-4">
             <h3 className="font-semibold mb-4">Contact Owner</h3>
@@ -188,7 +182,6 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* WhatsApp Button - Mobile Fixed */}
       <WhatsAppButton
         phoneNumber={property.owner_whatsapp}
         propertyTitle={property.title}
