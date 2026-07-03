@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -11,7 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PlusCircle, Home, Heart, LogOut } from 'lucide-react'
 import { Property, Favorite } from '@/types'
-import { toast } from '@/components/ui/toast'
+// YEH CHANGE KARO - toast ko hooks se import karo
+import { toast } from '@/hooks/use-toast'
 
 export default function DashboardPage() {
   const router = useRouter()
