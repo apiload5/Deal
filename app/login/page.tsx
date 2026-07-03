@@ -1,4 +1,3 @@
-// app/login/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -9,7 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Phone, Loader2 } from 'lucide-react'
-import { toast } from '@/components/ui/toast'
+// YEH CHANGE KARO - toast ko hooks se import karo
+import { toast } from '@/hooks/use-toast'
 
 export default function LoginPage() {
   const router = useRouter()
