@@ -1,4 +1,3 @@
-// components/PropertyForm.tsx
 'use client'
 
 import { useState } from 'react'
@@ -6,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ArrowLeft, ArrowRight, Check, Upload } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,7 +16,7 @@ import { ImageUpload } from './ImageUpload'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 import { PropertyFormData } from '@/types'
-import { toast } from '@/components/ui/toast'
+import { toast } from '@/hooks/use-toast'
 
 const propertySchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),
@@ -42,7 +41,6 @@ export function PropertyForm() {
   const { user } = useAuth()
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState<Partial<PropertyFormData>>({})
   
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(propertySchema),
@@ -80,13 +78,6 @@ export function PropertyForm() {
       
       if (error) throw error
 
-      // Send email notification
-      await fetch('/api/properties', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ property: data }),
-      })
-
       toast({
         title: 'Success!',
         description: 'Your property has been listed successfully.',
@@ -107,7 +98,6 @@ export function PropertyForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
-      {/* Steps indicator */}
       <div className="flex justify-between mb-8">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="flex items-center">
@@ -127,24 +117,23 @@ export function PropertyForm() {
 
       <Card>
         <CardContent className="p-6">
-          {/* Step 1: Basic Info */}
           {step === 1 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Basic Information</h2>
               <div>
                 <Label htmlFor="title">Property Title</Label>
                 <Input {...register('title')} placeholder="e.g., Luxury Villa in DHA" />
-                {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+                {errors.title && <p className="text-red-500 text-sm">{String(errors.title.message)}</p>}
               </div>
               <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea {...register('description')} rows={4} placeholder="Describe your property..." />
-                {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+                {errors.description && <p className="text-red-500 text-sm">{String(errors.description.message)}</p>}
               </div>
               <div>
                 <Label htmlFor="price">Price (PKR)</Label>
                 <Input {...register('price', { valueAsNumber: true })} type="number" placeholder="50,000,000" />
-                {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+                {errors.price && <p className="text-red-500 text-sm">{String(errors.price.message)}</p>}
               </div>
               <div>
                 <Label htmlFor="city_id">City</Label>
@@ -156,7 +145,7 @@ export function PropertyForm() {
                     {/* Cities will be fetched */}
                   </SelectContent>
                 </Select>
-                {errors.city_id && <p className="text-red-500 text-sm">{errors.city_id.message}</p>}
+                {errors.city_id && <p className="text-red-500 text-sm">{String(errors.city_id.message)}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -189,7 +178,6 @@ export function PropertyForm() {
             </div>
           )}
 
-          {/* Step 2: Details */}
           {step === 2 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Property Details</h2>
@@ -214,7 +202,6 @@ export function PropertyForm() {
             </div>
           )}
 
-          {/* Step 3: Media */}
           {step === 3 && (
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">Media</h2>
@@ -229,7 +216,7 @@ export function PropertyForm() {
                     setValue('images', newImages)
                   }}
                 />
-                {errors.images && <p className="text-red-500 text-sm">{errors.images.message}</p>}
+                {errors.images && <p className="text-red-500 text-sm">{String(errors.images.message)}</p>}
               </div>
               <div>
                 <Label htmlFor="tiktok_video_url">TikTok Video URL (Optional)</Label>
@@ -241,7 +228,6 @@ export function PropertyForm() {
             </div>
           )}
 
-          {/* Step 4: Contact */}
           {step === 4 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Contact Information</h2>
@@ -249,12 +235,11 @@ export function PropertyForm() {
                 <Label htmlFor="owner_whatsapp">WhatsApp Number</Label>
                 <Input {...register('owner_whatsapp')} placeholder="92XXXXXXXXXX" />
                 <p className="text-sm text-gray-500 mt-1">Format: 92XXXXXXXXXX (without + or 0)</p>
-                {errors.owner_whatsapp && <p className="text-red-500 text-sm">{errors.owner_whatsapp.message}</p>}
+                {errors.owner_whatsapp && <p className="text-red-500 text-sm">{String(errors.owner_whatsapp.message)}</p>}
               </div>
             </div>
           )}
 
-          {/* Step 5: Review */}
           {step === 5 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">Review Your Listing</h2>
@@ -273,7 +258,6 @@ export function PropertyForm() {
         </CardContent>
       </Card>
 
-      {/* Navigation */}
       <div className="flex justify-between">
         <Button
           type="button"
