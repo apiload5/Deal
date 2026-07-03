@@ -9,8 +9,7 @@ import { PropertyCard } from '@/components/PropertyCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PlusCircle, Home, Heart, LogOut } from 'lucide-react'
-import { Property, Favorite } from '@/types'
-// YEH CHANGE KARO - toast ko hooks se import karo
+import { Property } from '@/types'
 import { toast } from '@/hooks/use-toast'
 
 export default function DashboardPage() {
@@ -45,7 +44,7 @@ export default function DashboardPage() {
         .order('created_at', { ascending: false })
 
       if (propertiesData) {
-        setProperties(propertiesData)
+        setProperties(propertiesData as Property[])
       }
 
       // Fetch user's favorites
@@ -60,9 +59,10 @@ export default function DashboardPage() {
         .eq('user_id', user!.id)
 
       if (favoritesData) {
+        // YEH CHANGE KARO - type assertion sahi karo
         const favProperties = favoritesData
-          .map(f => f.property)
-          .filter(p => p !== null) as Property[]
+          .map((f: any) => f.property)
+          .filter((p: any) => p !== null) as Property[]
         setFavorites(favProperties)
       }
     } catch (error) {
