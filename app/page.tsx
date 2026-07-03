@@ -1,12 +1,12 @@
-// app/page.tsx
 import { Suspense } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { SearchBar } from '@/components/SearchBar'
 import { PropertyCard } from '@/components/PropertyCard'
 import { CityGrid } from '@/components/CityGrid'
 import { createServerClient } from '@/lib/supabase/server'
 import { Skeleton } from '@/components/ui/skeleton'
+// YEH ADD KARO - Button import
+import { Button } from '@/components/ui/button'
 
 export const revalidate = 3600 // ISR
 
