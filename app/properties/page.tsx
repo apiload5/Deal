@@ -3,10 +3,11 @@ import { Suspense } from 'react'
 import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { createServerClient } from '@/lib/supabase/server'
-import { PropertyFilters as Filters } from '@/types'
 import { Skeleton } from '@/components/ui/skeleton'
+// YEH DEKHO - Button import hai?
+import { Button } from '@/components/ui/button'  // ← YEH HONA CHAHIYE
 
-export const revalidate = 3600 // ISR
+export const revalidate = 3600
 
 interface PageProps {
   searchParams: {
@@ -30,7 +31,6 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
     `)
     .eq('status', 'active')
 
-  // Apply filters
   if (searchParams.city) {
     query = query.eq('city_id', searchParams.city)
   }
@@ -56,12 +56,10 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar */}
         <div className="lg:w-1/4">
           <PropertyFilters />
         </div>
 
-        {/* Main Content */}
         <div className="lg:w-3/4">
           <h1 className="text-3xl font-bold mb-6">
             {properties?.length || 0} Properties Found
