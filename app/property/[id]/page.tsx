@@ -4,8 +4,8 @@ import { TikTokPlayer } from '@/components/TikTokPlayer'
 import { Map } from '@/components/Map'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { createServerClient } from '@/lib/supabase/server'
-// ChevronLeft HATA DO - sirf ChevronRight aur baqi rakho
-import { ChevronRight, Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
+// Sirf woh icons import karo jo use ho rahe hain
+import { Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export const revalidate = 3600
