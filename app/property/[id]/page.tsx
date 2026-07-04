@@ -4,7 +4,6 @@ import { TikTokPlayer } from '@/components/TikTokPlayer'
 import { Map } from '@/components/Map'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { createServerClient } from '@/lib/supabase/server'
-// Sirf woh icons import karo jo use ho rahe hain
 import { Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -90,7 +89,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           )}
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {property.images?.slice(1, 5).map((image, index) => (
+          {property.images?.slice(1, 5).map((image: string, index: number) => (
             <div key={index} className="relative h-[230px] rounded-xl overflow-hidden">
               <Image
                 src={image}
