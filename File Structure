@@ -1,0 +1,93 @@
+deal.online/
+├── app/
+│   ├── (auth)/
+│   │   └── login/
+│   │       └── page.tsx
+│   ├── (dashboard)/
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx
+│   │   │   └── agent/
+│   │   │       └── page.tsx
+│   │   └── admin/
+│   │       └── page.tsx
+│   ├── add-property/
+│   │   └── page.tsx
+│   ├── agents/
+│   │   ├── page.tsx
+│   │   └── [id]/
+│   │       └── page.tsx
+│   ├── premium/
+│   │   └── page.tsx
+│   ├── properties/
+│   │   ├── page.tsx
+│   │   └── [id]/
+│   │       └── page.tsx
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── callback/
+│   │   │       └── route.ts
+│   │   ├── properties/
+│   │   │   └── route.ts
+│   │   └── admin/
+│   │       └── route.ts
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   └── providers.tsx
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── input.tsx
+│   │   ├── select.tsx
+│   │   ├── badge.tsx
+│   │   └── ... (all shadcn components)
+│   ├── layout/
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   └── MobileNav.tsx
+│   ├── properties/
+│   │   ├── PropertyCard.tsx
+│   │   ├── PropertyFilters.tsx
+│   │   ├── PropertyGrid.tsx
+│   │   └── PropertySkeleton.tsx
+│   ├── forms/
+│   │   ├── AddPropertyForm.tsx
+│   │   ├── Step1BasicInfo.tsx
+│   │   ├── Step2Details.tsx
+│   │   ├── Step3Media.tsx
+│   │   ├── Step4Contact.tsx
+│   │   └── Step5Review.tsx
+│   ├── shared/
+│   │   ├── SearchBar.tsx
+│   │   ├── TikTokPlayer.tsx
+│   │   ├── WhatsAppButton.tsx
+│   │   ├── Map.tsx
+│   │   ├── PremiumBadge.tsx
+│   │   ├── AdBanner.tsx
+│   │   └── ImageUpload.tsx
+│   └── auth/
+│       └── PhoneAuth.tsx
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts
+│   │   ├── server.ts
+│   │   └── middleware.ts
+│   ├── utils/
+│   │   ├── helpers.ts
+│   │   └── validators.ts
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   └── useProperties.ts
+│   ├── store/
+│   │   └── useStore.ts
+│   └── constants/
+│       └── index.ts
+├── types/
+│   └── index.ts
+├── middleware.ts
+├── next.config.js
+├── tailwind.config.js
+├── package.json
+├── .env.local
+└── tsconfig.json
