@@ -15,7 +15,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ImageUpload } from './ImageUpload'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
-import { PropertyFormData } from '@/types'
+import type { PropertyFormData } from '@/types'
 import { toast } from '@/hooks/use-toast'
 
 const propertySchema = z.object({
@@ -32,9 +32,11 @@ const propertySchema = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
   images: z.array(z.string()).min(1, 'Please upload at least 1 image'),
-  tiktok_video_url: z.string().url('Invalid URL').optional(),
+  tiktok_video_url: z.string().url('Invalid URL').optional().or(z.literal('')),
   owner_whatsapp: z.string().regex(/^92\d{10}$/, 'WhatsApp number must be in 92XXXXXXXXXX format'),
 })
+
+type PropertyFormValues = z.infer<typeof propertySchema>
 
 export function PropertyForm() {
   const router = useRouter()
@@ -42,7 +44,7 @@ export function PropertyForm() {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       property_type: 'house',
@@ -50,6 +52,7 @@ export function PropertyForm() {
       beds: 0,
       baths: 0,
       images: [],
+      tiktok_video_url: '',
     }
   })
 
@@ -58,7 +61,7 @@ export function PropertyForm() {
   const nextStep = () => setStep(step + 1)
   const prevStep = () => setStep(step - 1)
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: PropertyFormValues) => {
     if (step < 5) {
       nextStep()
       return
@@ -150,7 +153,7 @@ export function PropertyForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="property_type">Property Type</Label>
-                  <Select onValueChange={(value: any) => setValue('property_type', value)}>
+                  <Select onValueChange={(value: any) => setValue('property_type', value as any)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Type" />
                     </SelectTrigger>
@@ -164,7 +167,7 @@ export function PropertyForm() {
                 </div>
                 <div>
                   <Label htmlFor="purpose">Purpose</Label>
-                  <Select onValueChange={(value: any) => setValue('purpose', value)}>
+                  <Select onValueChange={(value: any) => setValue('purpose', value as any)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Purpose" />
                     </SelectTrigger>
