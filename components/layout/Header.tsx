@@ -1,10 +1,12 @@
+// components/layout/Header.tsx
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, PlusCircle, User, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Home, Search, PlusCircle, User, Menu, X, Shield } from 'lucide-react';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -21,6 +23,22 @@ export default function Header() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (user) {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        setIsAdmin(data?.role === 'admin');
+      }
+    };
+    checkAdmin();
+  }, [user]);
 
   const isActive = (path: string) => pathname === path;
 
@@ -101,6 +119,18 @@ export default function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/premium">Upgrade to Premium</Link>
                   </DropdownMenuItem>
+                  {/* Admin link - ONLY visible to admin users in dropdown */}
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild className="text-red-600 hover:bg-red-50">
+                        <Link href="/dashboard/admin" className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
                     Logout
@@ -170,6 +200,17 @@ export default function Header() {
                 >
                   Dashboard
                 </Link>
+                {/* Admin link in mobile menu - ONLY visible to admin users */}
+                {isAdmin && (
+                  <Link
+                    href="/dashboard/admin"
+                    className="flex items-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg px-3 py-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin Panel
+                  </Link>
+                )}
               </>
             )}
           </nav>
