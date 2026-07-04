@@ -1,7 +1,7 @@
 // components/layout/Header.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, PlusCircle, User, Menu, X, Shield } from 'lucide-react';
@@ -25,9 +25,10 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      if (user) {
+  // Check if user is admin
+  const checkAdmin = useCallback(async () => {
+    if (user) {
+      try {
         const supabase = createClient();
         const { data } = await supabase
           .from('users')
@@ -35,10 +36,18 @@ export default function Header() {
           .eq('id', user.id)
           .single();
         setIsAdmin(data?.role === 'admin');
+      } catch (error) {
+        // If there's an error, user is not admin
+        setIsAdmin(false);
       }
-    };
-    checkAdmin();
+    } else {
+      setIsAdmin(false);
+    }
   }, [user]);
+
+  useEffect(() => {
+    checkAdmin();
+  }, [checkAdmin]);
 
   const isActive = (path: string) => pathname === path;
 
@@ -107,38 +116,62 @@ export default function Header() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.user_metadata?.full_name || 'User'}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.phone || user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/dashboard" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard/agent">Agent Dashboard</Link>
+                    <Link href="/dashboard/agent" className="cursor-pointer">
+                      <Search className="mr-2 h-4 w-4" />
+                      Agent Dashboard
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/premium">Upgrade to Premium</Link>
+                    <Link href="/premium" className="cursor-pointer">
+                      <Shield className="mr-2 h-4 w-4 text-premium" />
+                      Upgrade to Premium
+                    </Link>
                   </DropdownMenuItem>
                   {/* Admin link - ONLY visible to admin users in dropdown */}
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild className="text-red-600 hover:bg-red-50">
-                        <Link href="/dashboard/admin" className="flex items-center gap-2">
+                      <DropdownMenuItem asChild className="text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600">
+                        <Link href="/dashboard/admin" className="cursor-pointer flex items-center gap-2">
                           <Shield className="h-4 w-4" />
-                          Admin Panel
+                          <span>Admin Panel</span>
+                          <span className="ml-auto text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                            Secure
+                          </span>
                         </Link>
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuItem 
+                    onClick={() => signOut()}
+                    className="cursor-pointer text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600"
+                  >
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild>
+              <Button asChild className="bg-primary hover:bg-primary/90">
                 <Link href="/login">Login</Link>
               </Button>
             )}
@@ -149,6 +182,7 @@ export default function Header() {
               size="icon"
               className="md:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -158,11 +192,11 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="border-t bg-white p-4 md:hidden">
-          <nav className="flex flex-col gap-4">
+        <div className="border-t bg-white p-4 shadow-lg md:hidden">
+          <nav className="flex flex-col space-y-3">
             <Link
               href="/"
-              className="flex items-center gap-2 text-sm font-medium hover:text-primary"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Home className="h-4 w-4" />
@@ -170,7 +204,7 @@ export default function Header() {
             </Link>
             <Link
               href="/properties"
-              className="flex items-center gap-2 text-sm font-medium hover:text-primary"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Search className="h-4 w-4" />
@@ -178,16 +212,17 @@ export default function Header() {
             </Link>
             <Link
               href="/agents"
-              className="flex items-center gap-2 text-sm font-medium hover:text-primary"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
               onClick={() => setIsMobileMenuOpen(false)}
             >
+              <User className="h-4 w-4" />
               Agents
             </Link>
             {user && (
               <>
                 <Link
                   href="/add-property"
-                  className="flex items-center gap-2 text-sm font-medium hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <PlusCircle className="h-4 w-4" />
@@ -195,22 +230,53 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-2 text-sm font-medium hover:text-primary"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
+                  <User className="h-4 w-4" />
                   Dashboard
+                </Link>
+                <Link
+                  href="/dashboard/agent"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Search className="h-4 w-4" />
+                  Agent Dashboard
+                </Link>
+                <Link
+                  href="/premium"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-50"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Shield className="h-4 w-4 text-premium" />
+                  Upgrade to Premium
                 </Link>
                 {/* Admin link in mobile menu - ONLY visible to admin users */}
                 {isAdmin && (
                   <Link
                     href="/dashboard/admin"
-                    className="flex items-center gap-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg px-3 py-2"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <Shield className="h-4 w-4" />
                     Admin Panel
+                    <span className="ml-auto text-[10px] bg-red-200 text-red-700 px-2 py-0.5 rounded-full">
+                      Secure
+                    </span>
                   </Link>
                 )}
+                <div className="border-t pt-2">
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+                  >
+                    Logout
+                  </button>
+                </div>
               </>
             )}
           </nav>
