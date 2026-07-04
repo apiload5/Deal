@@ -1,13 +1,12 @@
-// app/property/[id]/page.tsx
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { TikTokPlayer } from '@/components/TikTokPlayer'
 import { Map } from '@/components/Map'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { createServerClient } from '@/lib/supabase/server'
-import { ChevronLeft, ChevronRight, Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
-// YEH DEKHO - Button import hai?
-import { Button } from '@/components/ui/button'  // ← YEH HONA CHAHIYE
+// ChevronLeft HATA DO - sirf ChevronRight aur baqi rakho
+import { ChevronRight, Bed, Bath, Square, MapPin, Calendar } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export const revalidate = 3600
 
