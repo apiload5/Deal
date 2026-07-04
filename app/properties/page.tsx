@@ -1,11 +1,9 @@
-// app/properties/page.tsx
 import { Suspense } from 'react'
 import { PropertyCard } from '@/components/PropertyCard'
 import { PropertyFilters } from '@/components/PropertyFilters'
 import { createServerClient } from '@/lib/supabase/server'
 import { Skeleton } from '@/components/ui/skeleton'
-// YEH DEKHO - Button import hai?
-import { Button } from '@/components/ui/button'  // ← YEH HONA CHAHIYE
+// Button import HATA DO - kyunke is file mein use nahi ho raha
 
 export const revalidate = 3600
 
