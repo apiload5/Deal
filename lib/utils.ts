@@ -1,1 +1,1 @@
-export * from './utils/helper.js';
+export * from './utils/helper';
