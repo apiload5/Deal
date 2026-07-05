@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Providers } from './providers';
+// Providers HATAYE - abhi ke liye
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/shared/WhatsAppButton';
 import Script from 'next/script';
+import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from '@/components/theme-provider';
+import { AuthProvider } from '@/components/auth-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -77,14 +80,22 @@ export default function RootLayout({
         <link rel="canonical" href="https://deal.online" />
       </head>
       <body className={inter.className}>
-        <Providers>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <WhatsAppButton />
-          </div>
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <WhatsAppButton />
+              <Toaster />
+            </div>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
