@@ -42,7 +42,6 @@ export function truncateText(text: string, length: number): string {
 }
 
 export function formatPhoneNumber(phone: string): string {
-  // Format for WhatsApp: 92XXXXXXXXXX
   const cleaned = phone.replace(/\D/g, '');
   if (cleaned.startsWith('92')) return cleaned;
   if (cleaned.startsWith('0')) return '92' + cleaned.slice(1);
