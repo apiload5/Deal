@@ -9,10 +9,9 @@ import {
   Star, MapPin, Phone, Mail, Award, 
   Building2, Calendar, Users 
 } from 'lucide-react';
-import PropertyCard from '@/components/properties/PropertyCard';
-import { getInitials, formatDate } from '@/lib/utils/helpers';
+import { PropertyCard } from '@/components/PropertyCard';
+import { getInitials, formatDate } from '@/lib/utils/helper';
 import { Property } from '@/types';
-import AdBanner from '@/components/shared/AdBanner';
 
 interface AgentProfilePageProps {
   params: {
@@ -153,11 +152,6 @@ export default async function AgentProfilePage({ params }: AgentProfilePageProps
             <div className="font-medium">{agent.company_name || 'Independent'}</div>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Ad Banner */}
-      <div className="mb-8">
-        <AdBanner slot="1234567894" format="horizontal" />
       </div>
 
       {/* Properties List */}
