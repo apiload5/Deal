@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-// Providers HATAYE - abhi ke liye
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/shared/WhatsAppButton';
-import Script from 'next/script';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
-import { AuthProvider } from '@/components/auth-provider';
+import { AuthProvider } from '@/hooks/useAuth';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -88,10 +84,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <WhatsAppButton />
+              {children}
               <Toaster />
             </div>
           </AuthProvider>
