@@ -2,100 +2,82 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
-import AddPropertyForm from '@/components/forms/AddPropertyForm';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from '@/hooks/use-toast';
+import { ImageUpload } from '@/components/ImageUpload';
 
 export default function AddPropertyPage() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    price: '',
+    city_id: '',
+    area_sqft: '',
+    beds: '0',
+    baths: '0',
+    property_type: 'house',
+    purpose: 'sale',
+    address: '',
+    images: [] as string[],
+    tiktok_video_url: '',
+    owner_whatsapp: '',
+  });
 
-  // Redirect if not logged in
-  if (!loading && !user) {
+  // Agar user nahi hai toh redirect karo
+  if (!user) {
     router.push('/login');
     return null;
   }
 
-  const handleSubmit = async (formData: any) => {
-    const supabase = createClient();
-    setError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      // Insert property
-      const { data, error: insertError } = await supabase
+      const supabase = createClient();
+
+      const { data, error } = await supabase
         .from('properties')
         .insert({
-          title: formData.title,
-          description: formData.description,
-          price: formData.price,
-          city_id: formData.city_id,
-          area_sqft: formData.area_sqft,
-          beds: formData.beds,
-          baths: formData.baths,
-          property_type: formData.property_type,
-          purpose: formData.purpose,
-          address: formData.address,
+          ...formData,
+          price: parseInt(formData.price),
+          area_sqft: parseInt(formData.area_sqft) || 0,
+          beds: parseInt(formData.beds) || 0,
+          baths: parseInt(formData.baths) || 0,
           images: formData.images,
-          tiktok_video_url: formData.tiktok_video_url,
-          owner_id: user.id,
-          owner_whatsapp: formData.owner_whatsapp,
+          owner_id: user.id, // ✅ Ab user null nahi ho sakta
+          status: 'active',
         })
-        .select()
-        .single();
+        .select();
 
-      if (insertError) {
-        throw insertError;
-      }
+      if (error) throw error;
 
-      // Send admin email notification via Resend
-      try {
-        await fetch('/api/properties', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            propertyId: data.id,
-            title: data.title,
-            price: data.price,
-          }),
-        });
-      } catch (emailError) {
-        console.error('Failed to send email notification:', emailError);
-      }
+      toast({
+        title: 'Success!',
+        description: 'Property added successfully',
+      });
 
-      // If premium is selected, redirect to premium page
-      if (formData.upgradeToPremium) {
-        router.push(`/premium?propertyId=${data.id}`);
-      } else {
-        router.push(`/property/${data.id}`);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to add property. Please try again.');
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to add property',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Add Your Property</CardTitle>
-          <CardDescription>
-            List your property on deal.online and reach thousands of potential buyers
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          <AddPropertyForm onSubmit={handleSubmit} userId={user?.id || ''} />
-        </CardContent>
-      </Card>
-    </div>
-  );
+  // ... baqi JSX
 }
