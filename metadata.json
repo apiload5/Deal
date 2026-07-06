@@ -1,0 +1,6 @@
+{
+  "name": "Deal.pk",
+  "description": "Premium Pakistani real estate enterprise portal and secure escrow platform styled after Zameen.com",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
