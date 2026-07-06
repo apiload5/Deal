@@ -1,4 +1,4 @@
-// next.config.js
+// next.config.js - Fixed for Vercel deployment
 /** @type {import('next').NextConfig} */
 const withPWA = require('next-pwa')({
   dest: 'public',
@@ -23,6 +23,16 @@ const nextConfig = {
   },
   output: 'standalone',
   poweredByHeader: false,
+  // Important for Vercel
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    return config;
+  },
 };
 
 module.exports = withPWA(nextConfig);
