@@ -5,7 +5,6 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase/client"
 import { User } from "@supabase/supabase-js"
 import { useRouter } from "next/navigation"
-import { toast } from "@/components/ui/use-toast"
 
 interface AuthContextType {
   user: User | null
@@ -72,18 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
       throw error
     }
-
-    toast({
-      title: "OTP Sent",
-      description: "Please check your phone for the verification code",
-    })
   }
 
   const verifyOTP = async (phone: string, token: string) => {
@@ -94,18 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
       throw error
     }
-
-    toast({
-      title: "Success",
-      description: "You have been logged in successfully",
-    })
     
     router.push("/dashboard")
   }
@@ -113,10 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut()
     router.push("/")
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully",
-    })
   }
 
   const isAdmin = profile?.role === "admin"
