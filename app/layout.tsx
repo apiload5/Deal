@@ -1,18 +1,15 @@
-// app/layout.tsx
+// app/layout.tsx - Simplified
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Deal.pk - Pakistan\'s #1 Real Estate Portal',
-  description: 'Find properties for sale and rent in Pakistan. Premium real estate listings with secure deals.',
+  title: 'Deal.pk - Pakistan\'s Real Estate Portal',
+  description: 'Find properties for sale and rent in Pakistan',
 };
 
 export default function RootLayout({
@@ -25,10 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Providers>
-            <Header />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
-            <Toaster />
+            {children}
           </Providers>
         </ThemeProvider>
       </body>
