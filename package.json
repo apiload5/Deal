@@ -56,7 +56,6 @@
     "@next/bundle-analyzer": "^14.0.3",
     "@tailwindcss/typography": "^0.5.10",
     "@types/bcryptjs": "^2.4.6",
-    "@types/cloudinary": "^1.40.0",
     "@types/node": "^20.10.0",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.42",
