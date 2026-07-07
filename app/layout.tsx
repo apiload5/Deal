@@ -1,7 +1,5 @@
-'use client'
-
 import { ReactNode } from 'react'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Providers } from '@/app/providers'
 import './globals.css'
 
@@ -52,12 +50,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Pakistan's leading real estate marketplace" />
-        <link rel="canonical" href="https://deal.pk" />
-      </head>
       <body className="antialiased">
         <Providers>
           {children}
