@@ -32,9 +32,7 @@ const nextConfig = {
     unoptimized: process.env.NODE_ENV === 'development',
   },
   experimental: {
-    serverActions: true,
-    typedRoutes: true,
-    allowRequestExtensionHooks: true,
+    typedRoutes: true
   },
   env: {
     NEXT_PUBLIC_CURRENCY: 'Rs',
