@@ -1,6 +1,5 @@
 'use client'
 import useSWR from 'swr'
-import { getProperties, getProperty } from '../api-client'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
