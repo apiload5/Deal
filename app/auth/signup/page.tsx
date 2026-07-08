@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { Mail, Lock, User, Loader } from 'lucide-react'
 
 export default function SignupPage() {
-  const router = useRouter()
+  //const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
