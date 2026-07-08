@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { Button } from '@/components/common/Button'
 import { PropertyGrid } from '@/components/property/PropertyGrid'
 import { Search, SlidersHorizontal } from 'lucide-react'
@@ -104,7 +103,7 @@ export default function PropertiesPage() {
                 placeholder="Search by location or property name..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500"
+                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500"
               />
             </div>
             <Button variant="outline">
