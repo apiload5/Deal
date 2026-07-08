@@ -6,8 +6,19 @@ import { Button } from '@/components/common/Button'
 import { PropertyGrid } from '@/components/property/PropertyGrid'
 import { ArrowRight, Search, Home, TrendingUp, Shield } from 'lucide-react'
 
+type Property = {
+  id: string
+  title: string
+  price: number
+  location: string
+  beds: number
+  baths: number
+  area: number
+  image: string
+}
+
 export default function HomePage() {
-  const [featuredProperties, setFeaturedProperties] = useState([])
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
