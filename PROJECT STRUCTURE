@@ -1,0 +1,92 @@
+deal-online/
+├── 📁 app/
+│   ├── 📁 (auth)/
+│   │   └── 📁 login/
+│   │       └── page.tsx
+│   ├── 📁 (dashboard)/
+│   │   ├── 📁 add-property/
+│   │   │   └── page.tsx
+│   │   ├── 📁 dashboard/
+│   │   │   ├── page.tsx
+│   │   │   ├── 📁 admin/
+│   │   │   │   └── page.tsx
+│   │   │   └── 📁 agent/
+│   │   │       ├── page.tsx
+│   │   │       └── 📁 register/
+│   │   │           └── page.tsx
+│   │   └── 📁 premium/
+│   │       └── page.tsx
+│   ├── 📁 agents/
+│   │   └── page.tsx
+│   ├── 📁 agent/
+│   │   └── 📁 [id]/
+│   │       └── page.tsx
+│   ├── 📁 api/
+│   │   └── 📁 send-email/
+│   │       └── route.ts
+│   ├── 📁 properties/
+│   │   └── page.tsx
+│   ├── 📁 property/
+│   │   └── 📁 [id]/
+│   │       └── page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── robots.ts
+│   └── sitemap.ts
+├── 📁 components/
+│   ├── 📁 forms/
+│   │   └── ImageUpload.tsx
+│   ├── 📁 layout/
+│   │   ├── Footer.tsx
+│   │   └── Header.tsx
+│   ├── 📁 seo/
+│   │   └── PropertyStructuredData.tsx
+│   ├── 📁 shared/
+│   │   ├── AdBanner.tsx
+│   │   ├── AdSense.tsx
+│   │   ├── Map.tsx
+│   │   ├── PropertyCard.tsx
+│   │   ├── SearchBar.tsx
+│   │   ├── TikTokPlayer.tsx
+│   │   ├── WhatsAppButton.tsx
+│   │   └── WhatsAppFloat.tsx
+│   └── 📁 ui/
+│       ├── alert.tsx
+│       ├── avatar.tsx
+│       ├── badge.tsx
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── checkbox.tsx
+│       ├── dialog.tsx
+│       ├── dropdown-menu.tsx
+│       ├── input.tsx
+│       ├── label.tsx
+│       ├── select.tsx
+│       ├── table.tsx
+│       ├── tabs.tsx
+│       ├── textarea.tsx
+│       ├── toast.tsx
+│       ├── toaster.tsx
+│       └── use-toast.ts
+├── 📁 hooks/
+│   └── useAuth.ts
+├── 📁 lib/
+│   ├── 📁 supabase/
+│   │   ├── client.ts
+│   │   └── server.ts
+│   └── 📁 utils/
+│       └── helpers.ts
+├── 📁 public/
+├── .env.local
+├── .eslintrc.json
+├── .gitignore
+├── .npmrc
+├── components.json
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── vercel.json
