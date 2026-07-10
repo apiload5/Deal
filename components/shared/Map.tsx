@@ -1,3 +1,4 @@
+// components/shared/Map.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -33,17 +34,23 @@ export function Map({ lat, lng, title }: MapProps) {
   useEffect(() => {
     setMounted(true)
     
-    // ✅ CSS is imported HERE - client-side only
-    import('leaflet/dist/leaflet.css')
-    
-    // Fix default markers
-    const L = require('leaflet')
-    delete (L.Icon.Default.prototype as any)._getIconUrl
-    L.Icon.Default.mergeOptions({
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    })
+    // ✅ Dynamically import Leaflet CSS
+    const loadLeaflet = async () => {
+      try {
+        await import('leaflet/dist/leaflet.css')
+        const L = await import('leaflet')
+        // Fix default markers
+        delete (L.Icon.Default.prototype as any)._getIconUrl
+        L.Icon.Default.mergeOptions({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        })
+      } catch (error) {
+        console.warn('Failed to load Leaflet:', error)
+      }
+    }
+    loadLeaflet()
   }, [])
 
   if (!mounted) {
