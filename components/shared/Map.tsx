@@ -1,4 +1,3 @@
-// components/shared/Map.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -34,7 +33,7 @@ export function Map({ lat, lng, title }: MapProps) {
   useEffect(() => {
     setMounted(true)
     
-    // Import Leaflet CSS only on client side
+    // ✅ CSS is imported HERE - client-side only
     import('leaflet/dist/leaflet.css')
     
     // Fix default markers
