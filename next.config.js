@@ -14,6 +14,8 @@ const nextConfig = {
   reactStrictMode: true,
   compress: true,
   generateEtags: true,
+  // Fix for deprecated packages
+  transpilePackages: ['@supabase/ssr'],
 }
 
 module.exports = nextConfig
