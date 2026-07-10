@@ -36,9 +36,10 @@
   }
 }
 
-/* Leaflet CSS */
-@import 'leaflet/dist/leaflet.css';
+/* ❌ REMOVE this line - it causes build error */
+/* @import 'leaflet/dist/leaflet.css'; */
 
+/* ✅ Leaflet CSS will be loaded in Map.tsx component */
 .leaflet-container {
   height: 100%;
   width: 100%;
