@@ -1,8 +1,10 @@
+// hooks/useAuth.tsx
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { supabase } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
   user: User | null
@@ -17,26 +19,47 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+      }
       setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setUser(session?.user ?? null)
+        if (session?.user) {
+          await fetchProfile(session.user.id)
+        } else {
+          setProfile(null)
+        }
         setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
   }, [])
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (!error && data) {
+      setProfile(data)
+    }
+  }
 
   const signInWithPhone = async (phone: string) => {
     const { error } = await supabase.auth.signInWithOtp({ phone })
@@ -50,11 +73,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       type: 'sms',
     })
     if (error) throw error
+    router.push('/dashboard')
   }
 
   const signOut = async () => {
     await supabase.auth.signOut()
+    router.push('/')
   }
+
+  const isAdmin = profile?.role === 'admin'
+  const isAgent = profile?.role === 'agent' || profile?.role === 'admin'
 
   return (
     <AuthContext.Provider
@@ -65,8 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithPhone,
         verifyOTP,
         signOut,
-        isAdmin: profile?.role === 'admin',
-        isAgent: profile?.role === 'agent' || profile?.role === 'admin',
+        isAdmin,
+        isAgent,
       }}
     >
       {children}
