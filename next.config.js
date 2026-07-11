@@ -21,22 +21,14 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
   },
 
-  // ❌ REMOVE this - deprecated in Next.js 15
-  // swcMinify: true,
-
   compress: true,
   generateEtags: true,
   reactStrictMode: true,
   poweredByHeader: false,
   
+  // ✅ Disable optimizeCss temporarily
   experimental: {
-    optimizeCss: true,
-    optimizePackageImports: [
-      'lucide-react',
-      '@radix-ui/react-icons',
-      'date-fns',
-      'lodash',
-    ],
+    optimizeCss: false,
   },
 
   transpilePackages: [
@@ -45,7 +37,6 @@ const nextConfig = {
     'next-cloudinary',
   ],
 
-  // Webpack config
   webpack: (config, { isServer, dev }) => {
     if (!dev && !isServer) {
       config.optimization = {
