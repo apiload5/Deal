@@ -1,15 +1,7 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { Toaster } from '@/components/ui/toaster'
-import { AuthProvider } from '@/hooks/useAuth'
-
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'deal.online - Real Estate Platform',
-  description: 'Find properties for sale and rent in Pakistan',
-}
+// app/layout.tsx
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
+import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat'
 
 export default function RootLayout({
   children,
@@ -20,7 +12,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          {children}
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <WhatsAppFloat />
           <Toaster />
         </AuthProvider>
       </body>
