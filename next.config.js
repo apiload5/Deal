@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {},
+  
   images: {
-    domains: ['res.cloudinary.com', 'images.unsplash.com'],
+    // domains deprecated hai Next 16 me
     remotePatterns: [
       {
         protocol: 'https',
@@ -26,9 +28,9 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   
-  // ✅ Disable optimizeCss temporarily
+  // optimizeCss ab stable hai Next 16 me
   experimental: {
-    optimizeCss: false,
+    optimizeCss: true,
   },
 
   transpilePackages: [
@@ -37,42 +39,7 @@ const nextConfig = {
     'next-cloudinary',
   ],
 
-  webpack: (config, { isServer, dev }) => {
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 100000,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              priority: 10,
-            },
-            radix: {
-              test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-              name: 'radix',
-              chunks: 'all',
-              priority: 20,
-            },
-            lucide: {
-              test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
-              name: 'lucide',
-              chunks: 'all',
-              priority: 20,
-            },
-          },
-        },
-        runtimeChunk: 'single',
-        minimize: true,
-      };
-    }
-    return config;
-  },
-
+  // webpack hata diya - Turbopack use ho raha hai
   eslint: {
     ignoreDuringBuilds: true,
     dirs: ['app', 'components', 'hooks', 'lib'],
@@ -82,75 +49,39 @@ const nextConfig = {
   },
 
   staticPageGenerationTimeout: 120,
-  onDemandEntries: {
-    maxInactiveAge: 60 * 60 * 1000,
-    pagesBufferLength: 2,
-  },
 
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self)',
-          },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Referrer-Policy', value: 'origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },
         ],
       },
       {
         source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400, stale-while-revalidate=604800',
-          },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
       },
     ];
   },
 
   async redirects() {
     return [
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
-      },
+      { source: '/home', destination: '/', permanent: true },
     ];
   },
 
   async rewrites() {
     return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
+      { source: '/api/:path*', destination: '/api/:path*' },
     ];
   },
 };
