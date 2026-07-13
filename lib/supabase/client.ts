@@ -1,3 +1,4 @@
+// lib/supabase/client.ts - ALREADY EXISTS
 import { createBrowserClient } from '@supabase/ssr'
 
 export const createClient = () => {
