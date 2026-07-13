@@ -1,9 +1,16 @@
 /** @type {import('next').NextConfig} */
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development'
+})
+
 const nextConfig = {
-  turbopack: {},
-  
+  turbopack: {}, // Next 16 ke liye zaroori
+
   images: {
-    // domains deprecated hai Next 16 me
+    // domains hata diya - Next 16 me deprecated hai
     remotePatterns: [
       {
         protocol: 'https',
@@ -23,26 +30,24 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
   },
 
-  compress: true,
-  generateEtags: true,
-  reactStrictMode: true,
-  poweredByHeader: false,
-  
-  // optimizeCss ab stable hai Next 16 me
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 
   transpilePackages: [
     '@supabase/ssr',
     '@supabase/supabase-js',
     'next-cloudinary',
+    'leaflet',
+    'react-leaflet',
   ],
 
   // webpack hata diya - Turbopack use ho raha hai
+  // splitChunks Turbopack khud handle karta hai
+
   eslint: {
     ignoreDuringBuilds: true,
-    dirs: ['app', 'components', 'hooks', 'lib'],
   },
   typescript: {
     ignoreBuildErrors: true,
@@ -66,24 +71,8 @@ const nextConfig = {
         source: '/_next/static/(.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
-      {
-        source: '/images/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
-      },
     ];
   },
+}
 
-  async redirects() {
-    return [
-      { source: '/home', destination: '/', permanent: true },
-    ];
-  },
-
-  async rewrites() {
-    return [
-      { source: '/api/:path*', destination: '/api/:path*' },
-    ];
-  },
-};
-
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig)
