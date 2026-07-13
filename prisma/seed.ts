@@ -242,9 +242,10 @@ const seedData = {
 async function main() {
   console.log('🌱 Starting seed...')
 
+  // 1. Users + Agents create
   for (const userData of seedData.users) {
     const hashedPassword = await bcrypt.hash(userData.password, 10)
-    await prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { email: userData.email },
       update: {},
       create: {
@@ -254,39 +255,21 @@ async function main() {
         password: hashedPassword,
       },
     })
+
+    // Agar role agent hai to Agent table me bhi entry
+    if (userData.role === Role.agent) {
+      await prisma.agent.upsert({
+        where: { userId: user.id },
+        update: {},
+        create: {
+          userId: user.id,
+          phone: '03001234567',
+          company: 'Deal PK Real Estate',
+          cnic: `42201-123456${Math.floor(Math.random() * 10)}-7`, // unique CNIC
+          verified: true,
+          officeAddress: 'Karachi, Pakistan',
+        },
+      })
+    }
   }
-  console.log('✅ Users seeded')
-
-  // Get agent users
-  const agents = await prisma.user.findMany({
-    where: { role: Role.agent },
-  })
-
-  for (const [index, propertyData] of seedData.properties.entries()) {
-    const agent = agents[index % agents.length]
-    
-    await prisma.property.create({
-      data: {
-        ...propertyData,
-        priceFormatted: `Rs ${propertyData.price.toLocaleString('en-PK')}`,
-        agentId: agent?.id ? (await prisma.agent.findUnique({
-          where: { userId: agent.id },
-        }))?.id : undefined,
-        ownerId: agent?.id,
-        status: PropertyStatus.approved,
-      },
-    })
-  }
-  console.log('✅ Properties seeded')
-
-  console.log('🎉 Seed completed successfully!')
-}
-
-main()
-  .catch((e) => {
-    console.error('❌ Seed failed:', e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+  console.log('✅
