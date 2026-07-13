@@ -1,25 +1,46 @@
-// app/page.tsx
-import { Suspense } from 'react'
-import { SearchBar } from '@/features/search/components/SearchBar'
-import { PropertyGrid } from '@/features/search/components/PropertyGrid'
-import { CityGrid } from '@/features/search/components/CityGrid'
-import { BlogSection } from '@/features/blog/components/BlogSection'
-import { AdBanner } from '@/components/shared/AdBanner'
-import { StatsBar } from '@/components/shared/StatsBar'
-import { PropertyCardSkeleton } from '@/components/shared/PropertyCardSkeleton'
+// app/page.tsx - PRODUCTION READY
+import { supabase } from '@/lib/supabase/client'
+import { PropertyCard } from '@/components/shared/PropertyCard'
+import { SearchBar } from '@/components/shared/SearchBar'
+import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat'
+import Link from 'next/link'
 
 export default async function HomePage() {
+  // Fetch premium properties
+  const { data: premiumProperties } = await supabase
+    .from('properties')
+    .select('*, cities(name)')
+    .eq('is_premium', true)
+    .eq('status', 'active')
+    .gt('premium_until', new Date().toISOString())
+    .limit(6)
+
+  // Fetch featured properties
+  const { data: featuredProperties } = await supabase
+    .from('properties')
+    .select('*, cities(name)')
+    .eq('is_featured', true)
+    .eq('status', 'active')
+    .limit(6)
+
+  // Fetch cities
+  const { data: cities } = await supabase
+    .from('cities')
+    .select('*')
+    .order('total_properties', { ascending: false })
+    .limit(8)
+
   return (
-    <main>
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+      <section className="bg-gradient-to-r from-green-600 to-green-700 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
               Find Your Dream Property
             </h1>
             <p className="text-lg md:text-xl mb-8 opacity-90">
-              Pakistan's Largest Real Estate Portal
+              Pakistan's most trusted real estate platform
             </p>
             <SearchBar />
           </div>
@@ -27,109 +48,88 @@ export default async function HomePage() {
       </section>
 
       {/* Stats Bar */}
-      <StatsBar />
-
-      {/* Premium Properties */}
-      <section className="py-12 bg-gradient-to-b from-yellow-50 to-white">
+      <section className="bg-white border-b border-green-100 py-8">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <span className="text-yellow-500">✦</span> Premium Listings
-            </h2>
-            <a href="/properties?premium=true" className="text-blue-600 hover:underline">
-              View All
-            </a>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <p className="text-3xl font-bold text-green-600">50,000+</p>
+              <p className="text-gray-500 text-sm">Properties</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-green-600">10,000+</p>
+              <p className="text-gray-500 text-sm">Agents</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-green-600">5,000+</p>
+              <p className="text-gray-500 text-sm">Cities</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-green-600">4.8★</p>
+              <p className="text-gray-500 text-sm">Rating</p>
+            </div>
           </div>
-          <Suspense fallback={<PropertyCardSkeleton count={4} />}>
-            <PropertyGrid 
-              type="premium" 
-              limit={4} 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            />
-          </Suspense>
         </div>
       </section>
 
-      {/* Ad Banner */}
-      <AdBanner position="homepage" />
+      {/* Premium Properties */}
+      {premiumProperties && premiumProperties.length > 0 && (
+        <section className="py-12 bg-gradient-to-b from-yellow-50 to-white">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="text-yellow-500">✦</span> Premium Listings
+              </h2>
+              <Link href="/properties?premium=true" className="text-green-600 hover:underline">
+                View All →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {premiumProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Featured Properties */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold">Featured Properties</h2>
-            <a href="/properties" className="text-blue-600 hover:underline">
-              View All
-            </a>
+            <Link href="/properties" className="text-green-600 hover:underline">
+              View All →
+            </Link>
           </div>
-          <Suspense fallback={<PropertyCardSkeleton count={4} />}>
-            <PropertyGrid 
-              type="featured" 
-              limit={4}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            />
-          </Suspense>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredProperties?.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* City Grid */}
+      {/* Popular Cities */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8 text-center">
-            Popular Cities
-          </h2>
-          <CityGrid limit={8} />
-        </div>
-      </section>
-
-      {/* Blog Section */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold">Latest Real Estate Insights</h2>
-            <a href="/blog" className="text-blue-600 hover:underline">
-              View All
-            </a>
-          </div>
-          <BlogSection limit={3} />
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="py-12 bg-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔒</span>
-              </div>
-              <h3 className="font-semibold text-lg">Safe Deal</h3>
-              <p className="text-gray-600">Secure escrow payment system</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💰</span>
-              </div>
-              <h3 className="font-semibold text-lg">Best Prices</h3>
-              <p className="text-gray-600">Competitive market rates</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤝</span>
-              </div>
-              <h3 className="font-semibold text-lg">Trusted Agents</h3>
-              <p className="text-gray-600">Verified real estate agents</p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⚡</span>
-              </div>
-              <h3 className="font-semibold text-lg">Fast Deals</h3>
-              <p className="text-gray-600">Quick property transactions</p>
-            </div>
+          <h2 className="text-2xl font-bold mb-8 text-center">Popular Cities</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {cities?.map((city) => (
+              <Link
+                key={city.id}
+                href={`/properties?city=${city.slug}`}
+                className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow text-center border border-green-100 hover:border-green-500"
+              >
+                <h3 className="font-semibold text-lg">{city.name}</h3>
+                <p className="text-gray-500 text-sm">{city.total_properties} properties</p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* WhatsApp Float Button */}
+      <WhatsAppFloat />
     </main>
   )
 }
