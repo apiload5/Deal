@@ -78,6 +78,7 @@ model Agent {
   properties       Property[]
   payments         Payment[]
   deals            Deal[]
+  reviews          Review[]    // Added this relation
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 }
