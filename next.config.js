@@ -1,21 +1,17 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa')({
+const withPWA = require('@ducanh2912/next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-  runtimeCaching: [], // PWA cache yahan add kar lena
-});
+  disable: process.env.NODE_ENV === 'development'
+})
 
 const nextConfig = {
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-    ],
+    domains: ['res.cloudinary.com', 'lh3.googleusercontent.com'],
   },
-  serverActions: {
-    bodySizeLimit: '2mb', // default 1mb se barha diya
+  experimental: {
+    serverActions: true,
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -23,12 +19,10 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
-      };
+      }
     }
-    return config;
+    return config
   },
-  poweredByHeader: false,
-  reactStrictMode: true,
-};
+}
 
-module.exports = withPWA(nextConfig);
+module.exports = withPWA(nextConfig)
