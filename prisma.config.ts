@@ -1,8 +1,13 @@
 import { defineConfig } from 'prisma/config'
 
 export default defineConfig({
-  schema: 'prisma/schema.prisma',
-  seed: {
-    script: 'ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts',
+  earlyAccess: true,
+  schema: './schema.prisma',
+  migrate: {
+    connectionString: process.env.DATABASE_URL
   },
+  seed: {
+    // Prisma 7 me direct command dena hai
+    command: 'tsx prisma/seed.ts'
+  }
 })
