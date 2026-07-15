@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  agent
+  user
+  owner
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  PLOT
+  COMMERCIAL
+  PORTION
+  FARM_HOUSE
+}
+
+enum PropertyStatus {
+  pending
+  approved
+  rejected
+  sold
+  rented
+}
+
+enum PaymentType {
+  premium
+  featured
+  escrow
+}
+
+enum DealStatus {
+  pending
+  approved
+  paid
+  completed
+  cancelled
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String?
+  image        String?
+  phone        String?
+  password     String?
+  role         Role           @default(user)
+  properties   Property[]     @relation("OwnerProperties")
+  wishlist     Wishlist[]
+  alerts       SearchAlert[]
+  reviews      Review[]
+  agentProfile Agent?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Agent {
+  id               String      @id @default(cuid())
+  userId           String      @unique
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone            String
+  company          String
+  officeAddress    String?
+  officePhone      String?
+  cnic             String      @unique
+  verified         Boolean     @default(false)
+  rating           Float       @default(0)
+  totalReviews     Int         @default(0)
+  totalDealsCompleted Int     @default(0)
+  properties       Property[]
+  payments         Payment[]
+  deals            Deal[]
+  reviews          Review[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Property {
+  id               String          @id @default(cuid())
+  title            String
+  description      String          @db.Text
+  price            Int
+  priceFormatted   String
+  city             String
+  area             String
+  propertyType     PropertyType
+  purpose          String          @default("sale")
+  beds             Int?
+  baths            Int?
+  areaSqft         Int
+  furnished        String?
+  floor            Int?
+  builtYear        Int?
+  images           String[]
+  videoUrl         String?
+  videoPlatform    String?
+  latitude         Float?
+  longitude        Float?
+  agentId          String?
+  agent            Agent?          @relation(fields: [agentId], references: [id])
+  ownerId          String?
+  owner            User?           @relation("OwnerProperties", fields: [ownerId], references: [id])
+  isPremium        Boolean         @default(false)
+  premiumExpiresAt DateTime?
+  isFeatured       Boolean         @default(false)
+  featuredExpiresAt DateTime?
+  status           PropertyStatus  @default(pending)
+  views            Int             @default(0)
+  whatsappClicks   Int             @default(0)
+  reviews          Review[]
+  wishlist         Wishlist[]
+  deal             Deal?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([city, area, status, propertyType])
+  @@index([agentId])
+  @@index([ownerId])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  comment    String?
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+  agentId    String?
+  agent      Agent?   @relation(fields: [agentId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String   @db.Text
+  image     String?
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SearchAlert {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  filters   Json
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id           String      @id @default(cuid())
+  agentId      String
+  agent        Agent       @relation(fields: [agentId], references: [id])
+  propertyId   String?
+  amountRs     Int
+  orderId      String      @unique
+  type         PaymentType
+  rapidStatus  String?
+  status       String      @default("pending")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Wishlist {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model Deal {
+  id                String       @id @default(cuid())
+  propertyId        String       @unique
+  property          Property     @relation(fields: [propertyId], references: [id])
+  agentId           String
+  agent             Agent        @relation(fields: [agentId], references: [id])
+  buyerId           String
+  sellerId          String
+  salePriceRs       Int
+  sellerAmountRs    Int
+  commissionRs      Int
+  platformFeePercent Float       @default(1.0)
+  platformFeeRs     Int
+  status            DealStatus   @default(pending)
+  createdAt         DateTime     @default(now())
+  completedAt       DateTime?
+  updatedAt         DateTime     @updatedAt
+
+  @@index([agentId])
+  @@index([status])
+}
