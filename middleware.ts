@@ -6,7 +6,11 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request })
   const path = request.nextUrl.pathname
 
-  // Setup required check
+  // Setup required check - skip for API routes
+  if (path.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
   const hasRequiredEnv = process.env.NEXTAUTH_SECRET && 
                          process.env.DATABASE_URL &&
                          process.env.RAPID_MERCHANT_ID
@@ -16,7 +20,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Public routes
-  const publicRoutes = ['/', '/properties', '/property', '/map', '/area-guide', '/blog']
+  const publicRoutes = ['/', '/properties', '/property', '/map', '/area-guide', '/blog', '/auth']
   const isPublicRoute = publicRoutes.some(route => path.startsWith(route))
   
   if (isPublicRoute) {
@@ -33,12 +37,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/signin', request.url))
   }
 
-  // Role-based routing
-  if (path.startsWith('/admin-panel') && token.role !== 'admin') {
+  // Role-based routing - ignore if token doesn't have role
+  const userRole = token.role as string || 'user'
+  
+  if (path.startsWith('/admin-panel') && userRole !== 'admin') {
     return NextResponse.redirect(new URL('/unauthorized', request.url))
   }
 
-  if (path.startsWith('/agent') && !['agent', 'admin'].includes(token.role as string)) {
+  if (path.startsWith('/agent') && !['agent', 'admin'].includes(userRole)) {
     return NextResponse.redirect(new URL('/unauthorized', request.url))
   }
 
@@ -54,6 +60,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
