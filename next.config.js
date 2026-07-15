@@ -13,6 +13,11 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  // Vercel optimization
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
