@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Color Palette */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    
+    /* Primary - Warm Orange/Gold */
+    --primary: 30 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Deep Navy */
+    --secondary: 220 50% 15%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Accent - Emerald Green */
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Muted */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* Border */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 30 100% 50%;
+    
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 220 50% 8%;
+    --foreground: 210 40% 98%;
+    
+    --primary: 30 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 50% 15%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 220 50% 10%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 220 50% 10%;
+    --popover-foreground: 210 40% 98%;
+    
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 30 100% 50%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Premium Glassmorphism */
+.glass {
+  @apply bg-white/10 backdrop-blur-xl border border-white/20;
+}
+
+.glass-dark {
+  @apply bg-black/20 backdrop-blur-xl border border-white/10;
+}
+
+.glass-premium {
+  @apply bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl border border-white/20;
+}
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-gradient-to-r from-[hsl(30,100%,50%)] to-[hsl(40,100%,50%)] bg-clip-text text-transparent;
+}
+
+.gradient-text-secondary {
+  @apply bg-gradient-to-r from-[hsl(160,84%,39%)] to-[hsl(150,84%,39%)] bg-clip-text text-transparent;
+}
+
+/* Premium Button */
+.btn-premium {
+  @apply relative overflow-hidden bg-gradient-to-r from-[hsl(30,100%,50%)] to-[hsl(40,100%,50%)] text-white font-semibold rounded-full px-8 py-3 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25;
+}
+
+.btn-premium::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 transition-opacity duration-300;
+}
+
+.btn-premium:hover::before {
+  @apply opacity-100;
+}
+
+/* Card Premium */
+.card-premium {
+  @apply relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl;
+}
+
+/* Section Backgrounds */
+.section-gradient {
+  @apply bg-gradient-to-br from-[hsl(220,50%,15%)] via-[hsl(220,50%,10%)] to-[hsl(220,50%,8%)];
+}
+
+/* Mobile-First Responsive */
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 149, 0, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(255, 149, 0, 0.4); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-b from-orange-500 to-orange-600 rounded-full;
+}
