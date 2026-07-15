@@ -1,65 +1,45 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'
 
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request })
   const path = request.nextUrl.pathname
 
-  // Setup required check - skip for API routes
-  if (path.startsWith('/api')) {
+  // Skip API routes and static files
+  if (
+    path.startsWith('/api') ||
+    path.startsWith('/_next') ||
+    path.startsWith('/favicon.ico') ||
+    path.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
+  ) {
     return NextResponse.next()
   }
 
-  const hasRequiredEnv = process.env.NEXTAUTH_SECRET && 
-                         process.env.DATABASE_URL &&
-                         process.env.RAPID_MERCHANT_ID
-
-  if (!hasRequiredEnv && !path.startsWith('/setup')) {
-    return NextResponse.redirect(new URL('/setup', request.url))
-  }
-
   // Public routes
-  const publicRoutes = ['/', '/properties', '/property', '/map', '/area-guide', '/blog', '/auth']
+  const publicRoutes = [
+    '/', 
+    '/properties', 
+    '/property', 
+    '/map', 
+    '/area-guide', 
+    '/blog',
+    '/auth',
+    '/setup',
+    '/unauthorized'
+  ]
+  
   const isPublicRoute = publicRoutes.some(route => path.startsWith(route))
   
   if (isPublicRoute) {
     return NextResponse.next()
   }
 
-  // Auth routes
-  if (path.startsWith('/auth')) {
-    return NextResponse.next()
-  }
-
-  // Protected routes
-  if (!token) {
-    return NextResponse.redirect(new URL('/auth/signin', request.url))
-  }
-
-  // Role-based routing - ignore if token doesn't have role
-  const userRole = token.role as string || 'user'
-  
-  if (path.startsWith('/admin-panel') && userRole !== 'admin') {
-    return NextResponse.redirect(new URL('/unauthorized', request.url))
-  }
-
-  if (path.startsWith('/agent') && !['agent', 'admin'].includes(userRole)) {
-    return NextResponse.redirect(new URL('/unauthorized', request.url))
-  }
-
+  // For now, allow all other routes
+  // Add authentication later when needed
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }
