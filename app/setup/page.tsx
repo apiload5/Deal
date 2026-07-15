@@ -17,7 +17,7 @@ export default function SetupPage() {
 
   return (
     <div className="container mx-auto max-w-4xl py-16">
-      <Card className="glass">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {allSet ? (
