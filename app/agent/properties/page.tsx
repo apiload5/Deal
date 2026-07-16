@@ -88,9 +88,9 @@ export default async function AgentPropertiesPage() {
                 </p>
                 <div className="flex gap-2">
                   <Link href={`/property/${property.id}`} className="flex-1">
-                    <Button variant="outline" className="w-full">View</Button>
+                    <Button variant="outline" className="w-full rounded-full">View</Button>
                   </Link>
-                  <Button variant="outline">Edit</Button>
+                  <Button variant="outline" className="rounded-full">Edit</Button>
                 </div>
               </CardContent>
             </Card>
