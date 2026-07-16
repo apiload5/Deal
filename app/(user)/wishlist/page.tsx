@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { PropertyCard } from '@/features/search/components/PropertyCard'
+import { Heart } from 'lucide-react'
 
 export default async function WishlistPage() {
   const session = await getServerSession()
@@ -35,11 +36,12 @@ export default async function WishlistPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">My Wishlist</h1>
+      <h1 className="text-3xl font-bold mb-8 gradient-text">My Wishlist</h1>
       
       {wishlistItems.length === 0 ? (
-        <Card>
+        <Card className="glass">
           <CardContent className="flex flex-col items-center justify-center py-12">
+            <Heart className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-lg text-muted-foreground">Your wishlist is empty</p>
             <p className="text-sm text-muted-foreground">Start saving properties you love</p>
           </CardContent>
