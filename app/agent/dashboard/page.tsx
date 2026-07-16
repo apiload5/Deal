@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Home, TrendingUp, Users, DollarSign } from 'lucide-react'
+import { Home, TrendingUp, Users, DollarSign, Eye } from 'lucide-react'
 
 export default async function AgentDashboardPage() {
   const session = await getServerSession()
@@ -52,7 +52,7 @@ export default async function AgentDashboardPage() {
     {
       title: 'Total Views',
       value: views._sum.views || 0,
-      icon: Users,
+      icon: Eye,
       color: 'text-purple-500',
     },
     {
