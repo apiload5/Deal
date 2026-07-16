@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Home, Users, DollarSign, TrendingUp, Building, FileText } from 'lucide-react'
@@ -79,11 +79,11 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8 gradient-text">Admin Dashboard</h1>
       
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((item) => (
-          <Card key={item.title}>
+          <Card key={item.title} className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {item.title}
@@ -98,7 +98,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle>Recent Properties</CardTitle>
           </CardHeader>
@@ -106,7 +106,7 @@ export default async function AdminDashboardPage() {
             <p className="text-muted-foreground">Recent properties will appear here</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle>Recent Deals</CardTitle>
           </CardHeader>
