@@ -74,7 +74,7 @@ export default async function AdminAgentsPage() {
                 <span className="text-muted-foreground">Deals</span>
                 <span>{agent.totalDealsCompleted}</span>
               </div>
-              <Button className="w-full mt-4">Manage Agent</Button>
+              <Button className="w-full mt-4 rounded-full">Manage Agent</Button>
             </CardContent>
           </Card>
         ))}
