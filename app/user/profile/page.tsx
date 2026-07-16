@@ -90,7 +90,7 @@ export default function ProfilePage() {
                   className="bg-muted"
                 />
               </div>
-              <Button type="submit" disabled={loading} className="btn-premium">
+              <Button type="submit" className="w-full btn-premium" disabled={loading}>
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
             </form>
