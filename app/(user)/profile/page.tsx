@@ -51,9 +51,9 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mx-auto max-w-2xl">
-        <Card>
+        <Card className="glass">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold">Profile Settings</CardTitle>
+            <CardTitle className="text-3xl font-bold gradient-text">Profile Settings</CardTitle>
             <CardDescription>
               Manage your account settings and preferences
             </CardDescription>
@@ -62,7 +62,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4 mb-6">
               <Avatar className="h-20 w-20">
                 <AvatarImage src={session?.user?.image || ''} />
-                <AvatarFallback className="text-2xl">
+                <AvatarFallback className="text-2xl bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
                   {session?.user?.name?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -90,7 +90,7 @@ export default function ProfilePage() {
                   className="bg-muted"
                 />
               </div>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={loading} className="btn-premium">
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
             </form>
