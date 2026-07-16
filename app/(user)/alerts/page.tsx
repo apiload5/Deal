@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -25,12 +25,12 @@ export default async function AlertsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Search Alerts</h1>
-        <Button>Create Alert</Button>
+        <h1 className="text-3xl font-bold gradient-text">Search Alerts</h1>
+        <Button className="btn-premium">Create Alert</Button>
       </div>
 
       {alerts.length === 0 ? (
-        <Card>
+        <Card className="glass">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Bell className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-lg text-muted-foreground">No alerts set</p>
@@ -42,7 +42,7 @@ export default async function AlertsPage() {
       ) : (
         <div className="space-y-4">
           {alerts.map((alert) => (
-            <Card key={alert.id}>
+            <Card key={alert.id} className="glass">
               <CardHeader className="flex flex-row items-start justify-between">
                 <div>
                   <CardTitle>Search Alert</CardTitle>
