@@ -33,8 +33,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // For now, allow all other routes
-  // Add authentication later when needed
   return NextResponse.next()
 }
 
