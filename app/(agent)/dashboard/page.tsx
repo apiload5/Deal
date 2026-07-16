@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
+import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Home, TrendingUp, Users, DollarSign } from 'lucide-react'
@@ -23,7 +23,7 @@ export default async function AgentDashboardPage() {
     redirect('/agent/profile/setup')
   }
 
-  const [properties, deals, stats] = await Promise.all([
+  const [properties, deals, views] = await Promise.all([
     prisma.property.count({
       where: { agentId: user.agentProfile.id },
     }),
@@ -51,7 +51,7 @@ export default async function AgentDashboardPage() {
     },
     {
       title: 'Total Views',
-      value: stats._sum.views || 0,
+      value: views._sum.views || 0,
       icon: Users,
       color: 'text-purple-500',
     },
@@ -65,11 +65,11 @@ export default async function AgentDashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Agent Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8 gradient-text">Agent Dashboard</h1>
       
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {dashboardData.map((item) => (
-          <Card key={item.title}>
+          <Card key={item.title} className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {item.title}
@@ -84,7 +84,7 @@ export default async function AgentDashboardPage() {
       </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle>Recent Properties</CardTitle>
           </CardHeader>
@@ -92,7 +92,7 @@ export default async function AgentDashboardPage() {
             <p className="text-muted-foreground">Your properties will appear here</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle>Recent Deals</CardTitle>
           </CardHeader>
