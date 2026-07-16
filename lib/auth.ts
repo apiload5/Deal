@@ -1,13 +1,15 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
-import { prisma } from './prisma'
+
+const prisma = new PrismaClient()
 
 declare module 'next-auth' {
   interface User {
     role?: string
+    id?: string
   }
   interface Session {
     user: {
@@ -18,10 +20,13 @@ declare module 'next-auth' {
       role?: string
     }
   }
+  interface JWT {
+    role?: string
+    id?: string
+  }
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
   },
@@ -47,6 +52,9 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          include: {
+            agentProfile: true,
+          },
         })
 
         if (!user || !user.password) {
@@ -85,4 +93,10 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
+}
+
+// ✅ FIXED: Correct getServerSession function
+export async function getServerSession() {
+  const { getServerSession: getSession } = await import('next-auth')
+  return getSession(authOptions)
 }
