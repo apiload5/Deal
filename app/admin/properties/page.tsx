@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatPrice } from '@/lib/utils'
+import Link from 'next/link'
 
 export default async function AdminPropertiesPage() {
   const session = await getServerSession()
@@ -40,8 +41,10 @@ export default async function AdminPropertiesPage() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold gradient-text">Manage Properties</h1>
         <div className="flex gap-2">
-          <Button variant="outline">Filter</Button>
-          <Button className="btn-premium">Add New</Button>
+          <Button variant="outline" className="rounded-full">Filter</Button>
+          <Link href="/agent/properties/new">
+            <Button className="btn-premium">Add New</Button>
+          </Link>
         </div>
       </div>
 
@@ -79,7 +82,7 @@ export default async function AdminPropertiesPage() {
                     </td>
                     <td className="py-3 px-4">{property.agent?.user.name || 'N/A'}</td>
                     <td className="py-3 px-4">
-                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="outline" size="sm" className="rounded-full">Edit</Button>
                     </td>
                   </tr>
                 ))}
