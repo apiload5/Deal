@@ -13,7 +13,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="container mx-auto flex min-h-[80vh] items-center justify-center px-4">
-      <Card className="w-full max-w-md text-center">
+      <Card className="w-full max-w-md text-center glass">
         <CardHeader>
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
             <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-300" />
@@ -32,10 +32,10 @@ export default function PaymentSuccessPage() {
           )}
           <div className="flex flex-col gap-2">
             <Link href="/">
-              <Button className="w-full">Go to Home</Button>
+              <Button className="w-full btn-premium">Go to Home</Button>
             </Link>
             <Link href="/properties">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full rounded-full">
                 Browse Properties
               </Button>
             </Link>
