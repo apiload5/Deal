@@ -2,11 +2,10 @@ import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
+import prisma from './prisma'
 
-const prisma = new PrismaClient()
-
+// ✅ NextAuth User aur Session types ki declaration
 declare module 'next-auth' {
   interface User {
     role?: string
@@ -15,12 +14,16 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id?: string
-      email?: string
-      name?: string
-      image?: string
+      email?: string | null
+      name?: string | null
+      image?: string | null
       role?: string
     }
   }
+}
+
+// ✅ JWT types ki ALAG se declaration (TypeScript Fix)
+declare module 'next-auth/jwt' {
   interface JWT {
     role?: string
     id?: string
@@ -36,6 +39,8 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
     signUp: '/auth/signup',
   },
+  // ✅ Explicit secret for production
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -52,11 +57,9 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid credentials')
         }
 
+        // ✅ agentProfile hata diya - performance better
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
-          include: {
-            agentProfile: true,
-          },
         })
 
         if (!user || !user.password) {
@@ -74,7 +77,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name || undefined,
           image: user.image || undefined,
-          role: user.role,
+          role: user.role || 'user', // ✅ Fallback role
         }
       },
     }),
@@ -88,16 +91,17 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.role = token.role as string
-        session.user.id = token.id as string
+      if (session.user && token) {
+        session.user.role = token.role
+        session.user.id = token.id
       }
       return session
     },
   },
 }
 
+// ✅ App Router ke liye getServerSession
 export async function getServerSession() {
-  const { getServerSession } = await import('next-auth')
-  return getServerSession(authOptions)
+  const { getServerSession: nextGetServerSession } = await import('next-auth')
+  return nextGetServerSession(authOptions)
 }
