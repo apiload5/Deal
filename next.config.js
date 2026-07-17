@@ -18,8 +18,6 @@ const nextConfig = {
       allowedOrigins: ['localhost:3000', '*.vercel.app'],
     },
   },
-  turbopack: {},
-  webpack: null,
 }
 
 module.exports = nextConfig
