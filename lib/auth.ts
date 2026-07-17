@@ -1,5 +1,4 @@
 import { NextAuthOptions } from 'next-auth'
-import { getServerSession as getSession } from 'next-auth/next'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaClient } from '@prisma/client'
@@ -96,7 +95,8 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-// ✅ FIXED: getServerSession from next-auth/next
+// ✅ FIXED: getServerSession using dynamic import
 export async function getServerSession() {
-  return await getSession(authOptions)
+  const { getServerSession: getSession } = await import('next-auth')
+  return getSession(authOptions)
 }
