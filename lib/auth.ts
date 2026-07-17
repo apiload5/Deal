@@ -1,6 +1,7 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
 
@@ -27,6 +28,7 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
   },
@@ -95,8 +97,7 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-// ✅ FIXED: getServerSession using dynamic import
 export async function getServerSession() {
-  const { getServerSession: getSession } = await import('next-auth')
-  return getSession(authOptions)
+  const { getServerSession } = await import('next-auth')
+  return getServerSession(authOptions)
 }
