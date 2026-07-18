@@ -1,11 +1,11 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
-import prisma from './prisma'
 
-// ✅ NextAuth User aur Session types ki declaration
+const prisma = new PrismaClient()
+
 declare module 'next-auth' {
   interface User {
     role?: string
@@ -22,7 +22,6 @@ declare module 'next-auth' {
   }
 }
 
-// ✅ JWT types ki ALAG se declaration (TypeScript Fix)
 declare module 'next-auth/jwt' {
   interface JWT {
     role?: string
@@ -31,7 +30,6 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt',
   },
@@ -39,7 +37,6 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
     signUp: '/auth/signup',
   },
-  // ✅ Explicit secret for production
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -57,7 +54,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid credentials')
         }
 
-        // ✅ agentProfile hata diya - performance better
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         })
@@ -77,7 +73,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name || undefined,
           image: user.image || undefined,
-          role: user.role || 'user', // ✅ Fallback role
+          role: user.role || 'user',
         }
       },
     }),
@@ -100,7 +96,6 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-// ✅ App Router ke liye getServerSession
 export async function getServerSession() {
   const { getServerSession: nextGetServerSession } = await import('next-auth')
   return nextGetServerSession(authOptions)
