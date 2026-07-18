@@ -18,13 +18,9 @@ const nextConfig = {
       allowedOrigins: ['localhost:3000', '*.vercel.app'],
     },
   },
-  // ✅ Build timeout fix
-  staticPageGenerationTimeout: 120,
-  // ✅ Memory fix
-  onDemandEntries: {
-    maxInactiveAge: 60 * 1000,
-    pagesBufferLength: 2,
-  },
+  // Next.js 16 specific
+  reactStrictMode: true,
+  swcMinify: true,
 }
 
 module.exports = nextConfig
