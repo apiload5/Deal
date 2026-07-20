@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Home, Search } from 'lucide-react'
 
 export default function NotFound() {
@@ -12,17 +11,19 @@ export default function NotFound() {
         The page you are looking for does not exist or has been moved.
       </p>
       <div className="mt-6 flex flex-wrap gap-4">
-        <Link href="/">
-          <Button variant="default" className="gap-2 rounded-full px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:scale-105 transition-all duration-300">
-            <Home className="h-4 w-4" />
-            Go Home
-          </Button>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 px-6 py-3 text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25"
+        >
+          <Home className="h-4 w-4" />
+          Go Home
         </Link>
-        <Link href="/properties">
-          <Button variant="outline" className="gap-2 rounded-full">
-            <Search className="h-4 w-4" />
-            Browse Properties
-          </Button>
+        <Link
+          href="/properties"
+          className="inline-flex items-center gap-2 rounded-full border border-input bg-background px-6 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
+          <Search className="h-4 w-4" />
+          Browse Properties
         </Link>
       </div>
     </div>
