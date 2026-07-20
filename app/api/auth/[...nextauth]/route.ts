@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
+// ✅ Next.js 15 compatible
 const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST }
+export const GET = handler
+export const POST = handler
