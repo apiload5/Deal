@@ -18,9 +18,7 @@ const nextConfig = {
       allowedOrigins: ['localhost:3000', '*.vercel.app'],
     },
   },
-  // Next.js 16 specific
   reactStrictMode: true,
-  swcMinify: true,
 }
 
 module.exports = nextConfig
