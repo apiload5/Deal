@@ -10,7 +10,6 @@ import Footer from '@/components/layout/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
-// ✅ FIXED: Metadata (without themeColor)
 export const metadata: Metadata = {
   title: 'Deal.pk - Pakistan\'s Premier Property Platform',
   description: 'Find your dream property in Pakistan. Buy, sell, or rent properties with Deal.pk',
@@ -21,7 +20,6 @@ export const metadata: Metadata = {
   },
 }
 
-// ✅ FIXED: Viewport (themeColor yahan move kiya)
 export const viewport: Viewport = {
   themeColor: '#ffffff',
   width: 'device-width',
