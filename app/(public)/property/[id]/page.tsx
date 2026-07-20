@@ -142,11 +142,14 @@ export default async function PropertyDetailPage({
             </p>
           </div>
 
-          {/* Video */}
+          {/* Video - FIXED: Type assertion */}
           {property.videoUrl && (
             <div className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Video Tour</h2>
-              <VideoPlayer url={property.videoUrl} platform={property.videoPlatform || 'youtube'} />
+              <VideoPlayer 
+                url={property.videoUrl} 
+                platform={(property.videoPlatform as 'youtube' | 'vimeo' | 'custom') || 'youtube'} 
+              />
             </div>
           )}
 
