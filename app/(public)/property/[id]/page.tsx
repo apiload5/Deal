@@ -48,21 +48,34 @@ export default async function PropertyDetailPage({
     data: { views: { increment: 1 } },
   })
 
+  // ✅ Safe values with fallbacks
+  const safeValues = {
+    beds: property.beds ?? 'N/A',
+    baths: property.baths ?? 'N/A',
+    builtYear: property.builtYear ?? 'N/A',
+    floor: property.floor ?? 'Ground',
+    furnished: property.furnished ?? 'Not specified',
+    videoPlatform: property.videoPlatform as 'youtube' | 'vimeo' | 'custom' || 'youtube',
+    images: property.images?.length > 0 ? property.images : ['/placeholder-property.jpg'],
+    reviews: property.reviews ?? [],
+    agent: property.agent ?? null,
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          {/* Images */}
+          {/* Images - ✅ Safe check */}
           <div className="grid grid-cols-2 gap-2 overflow-hidden rounded-2xl">
             <div className="col-span-2 aspect-video">
               <img
-                src={property.images[0] || '/placeholder-property.jpg'}
+                src={safeValues.images[0]}
                 alt={property.title}
                 className="h-full w-full object-cover"
               />
             </div>
-            {property.images.slice(1, 3).map((image, index) => (
+            {safeValues.images.slice(1, 3).map((image, index) => (
               <div key={index} className="aspect-square">
                 <img
                   src={image}
@@ -102,19 +115,19 @@ export default async function PropertyDetailPage({
             </Button>
           </div>
 
-          {/* Property Details */}
+          {/* Property Details - ✅ Safe values */}
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-xl">
               <Bed className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm font-medium">{property.beds || 'N/A'}</p>
+                <p className="text-sm font-medium">{safeValues.beds}</p>
                 <p className="text-xs text-muted-foreground">Beds</p>
               </div>
             </div>
             <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-xl">
               <Bath className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm font-medium">{property.baths || 'N/A'}</p>
+                <p className="text-sm font-medium">{safeValues.baths}</p>
                 <p className="text-xs text-muted-foreground">Baths</p>
               </div>
             </div>
@@ -128,7 +141,7 @@ export default async function PropertyDetailPage({
             <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-xl">
               <Calendar className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm font-medium">{property.builtYear || 'N/A'}</p>
+                <p className="text-sm font-medium">{safeValues.builtYear}</p>
                 <p className="text-xs text-muted-foreground">Year Built</p>
               </div>
             </div>
@@ -138,22 +151,22 @@ export default async function PropertyDetailPage({
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4">Description</h2>
             <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-              {property.description}
+              {property.description || 'No description available'}
             </p>
           </div>
 
-          {/* Video - FIXED: Type assertion */}
+          {/* Video - ✅ Safe check */}
           {property.videoUrl && (
             <div className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Video Tour</h2>
               <VideoPlayer 
                 url={property.videoUrl} 
-                platform={(property.videoPlatform as 'youtube' | 'vimeo' | 'custom') || 'youtube'} 
+                platform={safeValues.videoPlatform}
               />
             </div>
           )}
 
-          {/* Map */}
+          {/* Map - ✅ Safe check */}
           {property.latitude && property.longitude && (
             <div className="mt-8">
               <h2 className="text-xl font-semibold mb-4">Location</h2>
@@ -165,19 +178,19 @@ export default async function PropertyDetailPage({
             </div>
           )}
 
-          {/* Reviews */}
+          {/* Reviews - ✅ Safe check */}
           <div className="mt-8">
             <h2 className="text-xl font-semibold mb-4">Reviews</h2>
-            {property.reviews.length === 0 ? (
+            {safeValues.reviews.length === 0 ? (
               <p className="text-muted-foreground">No reviews yet</p>
             ) : (
               <div className="space-y-4">
-                {property.reviews.map((review) => (
+                {safeValues.reviews.map((review) => (
                   <Card key={review.id} className="glass">
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">{review.user.name}</p>
+                          <p className="font-medium">{review.user?.name || 'Anonymous'}</p>
                           <p className="text-sm text-muted-foreground">
                             {formatDate(review.createdAt)}
                           </p>
@@ -186,7 +199,7 @@ export default async function PropertyDetailPage({
                           {Array.from({ length: 5 }).map((_, i) => (
                             <span
                               key={i}
-                              className={i < review.rating ? 'text-yellow-500' : 'text-gray-300'}
+                              className={i < (review.rating || 0) ? 'text-yellow-500' : 'text-gray-300'}
                             >
                               ★
                             </span>
@@ -206,8 +219,8 @@ export default async function PropertyDetailPage({
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Agent Card */}
-          {property.agent && (
+          {/* Agent Card - ✅ Safe check */}
+          {safeValues.agent ? (
             <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -218,27 +231,39 @@ export default async function PropertyDetailPage({
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold">
-                    {property.agent.user.name?.[0] || 'A'}
+                    {safeValues.agent.user?.name?.[0] || 'A'}
                   </div>
                   <div>
-                    <p className="font-medium">{property.agent.user.name}</p>
-                    <p className="text-sm text-muted-foreground">{property.agent.company}</p>
+                    <p className="font-medium">{safeValues.agent.user?.name || 'Agent'}</p>
+                    <p className="text-sm text-muted-foreground">{safeValues.agent.company || 'Real Estate'}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <p className="text-muted-foreground">Rating</p>
-                    <p className="font-medium">{property.agent.rating.toFixed(1)} ★</p>
+                    <p className="font-medium">{safeValues.agent.rating?.toFixed(1) || '0.0'} ★</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Deals</p>
-                    <p className="font-medium">{property.agent.totalDealsCompleted}</p>
+                    <p className="font-medium">{safeValues.agent.totalDealsCompleted || 0}</p>
                   </div>
                 </div>
                 <Button className="w-full gap-2 btn-premium">
                   <MessageCircle className="h-4 w-4" />
                   Contact Agent
                 </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="glass">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-orange-500" />
+                  Agent
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">No agent assigned</p>
               </CardContent>
             </Card>
           )}
@@ -255,25 +280,25 @@ export default async function PropertyDetailPage({
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between border-b pb-2">
                   <dt className="text-muted-foreground">Type</dt>
-                  <dd className="font-medium capitalize">{property.propertyType.toLowerCase()}</dd>
+                  <dd className="font-medium capitalize">{property.propertyType?.toLowerCase() || 'N/A'}</dd>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <dt className="text-muted-foreground">Purpose</dt>
-                  <dd className="font-medium capitalize">{property.purpose}</dd>
+                  <dd className="font-medium capitalize">{property.purpose || 'N/A'}</dd>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <dt className="text-muted-foreground">Furnished</dt>
-                  <dd className="font-medium">{property.furnished || 'Not specified'}</dd>
+                  <dd className="font-medium">{safeValues.furnished}</dd>
                 </div>
                 <div className="flex justify-between border-b pb-2">
                   <dt className="text-muted-foreground">Floor</dt>
-                  <dd className="font-medium">{property.floor || 'Ground'}</dd>
+                  <dd className="font-medium">{safeValues.floor}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Views</dt>
                   <dd className="font-medium flex items-center gap-1">
                     <Eye className="h-3 w-3" />
-                    {property.views}
+                    {property.views || 0}
                   </dd>
                 </div>
               </dl>
