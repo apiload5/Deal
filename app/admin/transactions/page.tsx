@@ -21,6 +21,7 @@ export default async function AdminTransactionsPage() {
     redirect('/unauthorized')
   }
 
+  // ✅ FIXED: Removed 'property' include - using payment only
   const transactions = await prisma.payment.findMany({
     include: {
       agent: {
@@ -28,7 +29,6 @@ export default async function AdminTransactionsPage() {
           user: true,
         },
       },
-      property: true,
     },
     orderBy: {
       createdAt: 'desc',
@@ -60,7 +60,7 @@ export default async function AdminTransactionsPage() {
                 {transactions.map((transaction) => (
                   <tr key={transaction.id} className="border-b hover:bg-muted/50">
                     <td className="py-3 px-4 font-mono text-xs">{transaction.orderId}</td>
-                    <td className="py-3 px-4">{transaction.agent.user.name}</td>
+                    <td className="py-3 px-4">{transaction.agent?.user?.name || 'N/A'}</td>
                     <td className="py-3 px-4 font-medium">{formatPrice(transaction.amountRs)}</td>
                     <td className="py-3 px-4">
                       <Badge variant={
