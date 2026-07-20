@@ -18,9 +18,12 @@ async function main() {
       role: Role.admin,
     },
   })
+  console.log('✅ Admin created:', admin.email)
 
   // Create agent user
   const agentPassword = await hash('agent123', 10)
+  
+  // ✅ FIXED: Create user first
   const agentUser = await prisma.user.upsert({
     where: { email: 'agent@deal.pk' },
     update: {},
@@ -29,16 +32,23 @@ async function main() {
       name: 'Agent User',
       password: agentPassword,
       role: Role.agent,
-      agentProfile: {
-        create: {
-          phone: '+923001234567',
-          company: 'Deal.pk Real Estate',
-          cnic: '12345-1234567-1',
-          verified: true,
-        },
-      },
     },
   })
+  console.log('✅ Agent user created:', agentUser.email)
+
+  // ✅ FIXED: Create agent profile separately
+  const agentProfile = await prisma.agent.upsert({
+    where: { userId: agentUser.id },
+    update: {},
+    create: {
+      userId: agentUser.id,
+      phone: '+923001234567',
+      company: 'Deal.pk Real Estate',
+      cnic: '12345-1234567-1',
+      verified: true,
+    },
+  })
+  console.log('✅ Agent profile created for:', agentUser.email)
 
   // Create sample properties
   const sampleProperties = [
@@ -61,7 +71,8 @@ async function main() {
       isPremium: true,
       isFeatured: true,
       status: PropertyStatus.approved,
-      agentId: agentUser.agentProfile?.id || null,
+      // ✅ FIXED: Use agentProfile.id
+      agentId: agentProfile.id,
     },
     {
       title: 'Modern Apartment in Bahria Town',
@@ -82,7 +93,7 @@ async function main() {
       isPremium: false,
       isFeatured: false,
       status: PropertyStatus.approved,
-      agentId: agentUser.agentProfile?.id || null,
+      agentId: agentProfile.id,
     },
     {
       title: 'Commercial Plot in Blue Area',
@@ -101,7 +112,7 @@ async function main() {
       isPremium: true,
       isFeatured: false,
       status: PropertyStatus.approved,
-      agentId: agentUser.agentProfile?.id || null,
+      agentId: agentProfile.id,
     },
   ]
 
@@ -110,10 +121,11 @@ async function main() {
       data: property,
     })
   }
+  console.log('✅ Sample properties created')
 
   console.log('✅ Seeding completed!')
-  console.log(`📊 Created admin: admin@deal.pk`)
-  console.log(`📊 Created agent: agent@deal.pk`)
+  console.log(`📊 Admin: admin@deal.pk (password: admin123)`)
+  console.log(`📊 Agent: agent@deal.pk (password: agent123)`)
 }
 
 main()
