@@ -10,13 +10,19 @@ import { VideoPlayer } from '@/features/video-embed/components/VideoPlayer'
 import { MortgageCalculator } from '@/features/mortgage/components/MortgageCalculator'
 import { Share2, Heart, MapPin, Bed, Bath, Square, Calendar, Eye, MessageCircle, Building2 } from 'lucide-react'
 
+interface PageParams {
+  id: string
+}
+
 export default async function PropertyDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<PageParams>
 }) {
+  const { id } = await params
+  
   const property = await prisma.property.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       agent: {
         include: {
