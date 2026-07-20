@@ -5,9 +5,11 @@ import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 
+export type VideoPlatform = 'youtube' | 'vimeo' | 'custom'
+
 interface VideoPlayerProps {
   url: string
-  platform?: 'youtube' | 'vimeo' | 'custom'
+  platform?: VideoPlatform
 }
 
 export function VideoPlayer({ url, platform = 'youtube' }: VideoPlayerProps) {
