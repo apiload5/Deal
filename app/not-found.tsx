@@ -13,7 +13,7 @@ export default function NotFound() {
       </p>
       <div className="mt-6 flex flex-wrap gap-4">
         <Link href="/">
-          <Button className="gap-2 btn-premium">
+          <Button variant="default" className="gap-2 rounded-full px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:scale-105 transition-all duration-300">
             <Home className="h-4 w-4" />
             Go Home
           </Button>
