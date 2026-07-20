@@ -3,46 +3,50 @@ import { prisma } from '@/lib/prisma'
 import { PropertyCard } from '@/features/search/components/PropertyCard'
 import { SearchFilters } from '@/features/search/components/SearchFilters'
 
+interface SearchParams {
+  city?: string
+  type?: string
+  purpose?: string
+  minPrice?: string
+  maxPrice?: string
+  beds?: string
+}
+
 export default async function PropertiesPage({
   searchParams,
 }: {
-  searchParams: {
-    city?: string
-    type?: string
-    purpose?: string
-    minPrice?: string
-    maxPrice?: string
-    beds?: string
-  }
+  searchParams: Promise<SearchParams>
 }) {
+  const params = await searchParams
+  
   const where: any = {
     status: 'approved',
   }
 
-  if (searchParams.city) {
-    where.city = searchParams.city
+  if (params.city) {
+    where.city = params.city
   }
 
-  if (searchParams.type) {
-    where.propertyType = searchParams.type
+  if (params.type) {
+    where.propertyType = params.type
   }
 
-  if (searchParams.purpose) {
-    where.purpose = searchParams.purpose
+  if (params.purpose) {
+    where.purpose = params.purpose
   }
 
-  if (searchParams.minPrice || searchParams.maxPrice) {
+  if (params.minPrice || params.maxPrice) {
     where.price = {}
-    if (searchParams.minPrice) {
-      where.price.gte = parseInt(searchParams.minPrice)
+    if (params.minPrice) {
+      where.price.gte = parseInt(params.minPrice)
     }
-    if (searchParams.maxPrice) {
-      where.price.lte = parseInt(searchParams.maxPrice)
+    if (params.maxPrice) {
+      where.price.lte = parseInt(params.maxPrice)
     }
   }
 
-  if (searchParams.beds) {
-    where.beds = parseInt(searchParams.beds)
+  if (params.beds) {
+    where.beds = parseInt(params.beds)
   }
 
   const properties = await prisma.property.findMany({
