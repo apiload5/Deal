@@ -1,6 +1,7 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
+import { PrismaAdapter } from "@next-auth/prisma-adapter" // 1. ye add karo
 import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcryptjs'
 
@@ -30,6 +31,7 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma), // 2. ye add karo
   session: {
     strategy: 'jwt',
   },
@@ -96,7 +98,8 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-export async function getServerSession() {
-  const { getServerSession: nextGetServerSession } = await import('next-auth')
-  return nextGetServerSession(authOptions)
+// 3. Function ka naam change kar do warna clash hoga
+export async function getServerAuthSession() {
+  const { getServerSession } = await import('next-auth/next') // next-auth/next for app router
+  return getServerSession(authOptions)
 }
