@@ -1,5 +1,5 @@
 import * as React from 'react'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
@@ -10,15 +10,23 @@ import Footer from '@/components/layout/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
+// ✅ FIXED: Metadata (without themeColor)
 export const metadata: Metadata = {
   title: 'Deal.pk - Pakistan\'s Premier Property Platform',
   description: 'Find your dream property in Pakistan. Buy, sell, or rent properties with Deal.pk',
   manifest: '/manifest.json',
-  themeColor: '#ffffff',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
   },
+}
+
+// ✅ FIXED: Viewport (themeColor yahan move kiya)
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
