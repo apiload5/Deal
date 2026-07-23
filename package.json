@@ -1,0 +1,38 @@
+{
+  "name": "dealpk",
+  "version": "2.0.0",
+  "description": "Pakistan's Premier Property Platform",
+  "type": "module",
+  "scripts": {
+    "dev": "node api/_lib/dev-server.js",
+    "build": "echo 'Build complete'",
+    "start": "node api/_lib/server.js",
+    "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "cloudinary": "^1.41.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "uuid": "^9.0.1",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "redis": "^4.6.10",
+    "@vercel/kv": "^0.2.2",
+    "@vercel/edge-config": "^0.1.11",
+    "mapbox-gl": "^2.15.0",
+    "axios": "^1.5.0",
+    "pdfkit": "^0.14.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
