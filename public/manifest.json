@@ -1,0 +1,16 @@
+{
+  "name": "Deal.pk - Pakistan's Premier Property Platform",
+  "short_name": "Deal.pk",
+  "description": "Find your dream property in Pakistan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "https://deal-qomb.onrender.com/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
