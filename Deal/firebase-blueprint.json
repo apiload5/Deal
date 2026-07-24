@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "properties": {
+      "title": "Properties",
+      "description": "Real estate listings in Pakistan",
+      "fields": {
+        "title": { "type": "string", "required": true },
+        "city": { "type": "string", "required": true },
+        "price": { "type": "number", "required": true }
+      }
+    },
+    "bookings": {
+      "title": "Escrow Bookings",
+      "description": "Escrow protected transaction bookings",
+      "fields": {
+        "propertyId": { "type": "string", "required": true },
+        "amountPaid": { "type": "number", "required": true }
+      }
+    }
+  }
+}
