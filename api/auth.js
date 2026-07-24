@@ -48,3 +48,33 @@ export async function adminMiddleware(req, res, next) {
         next();
     });
 }
+
+export async function agentMiddleware(req, res, next) {
+    await authMiddleware(req, res, async () => {
+        const role = await getUserRole(req.user.id);
+        if (role !== 'agent' && role !== 'agency' && role !== 'admin') {
+            return res.status(403).json({ success: false, error: 'Agent access required' });
+        }
+        next();
+    });
+}
+
+export async function agencyMiddleware(req, res, next) {
+    await authMiddleware(req, res, async () => {
+        const role = await getUserRole(req.user.id);
+        if (role !== 'agency' && role !== 'admin') {
+            return res.status(403).json({ success: false, error: 'Agency access required' });
+        }
+        next();
+    });
+}
+
+export async function builderMiddleware(req, res, next) {
+    await authMiddleware(req, res, async () => {
+        const role = await getUserRole(req.user.id);
+        if (role !== 'builder' && role !== 'admin') {
+            return res.status(403).json({ success: false, error: 'Builder access required' });
+        }
+        next();
+    });
+}
