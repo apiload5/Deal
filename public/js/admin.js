@@ -1,5 +1,5 @@
 // Admin Panel JavaScript
-const API_URL = '/api';
+const API_URL = 'https://deal-qomb.onrender.com/api';
 let currentUser = null;
 
 // Check admin access
