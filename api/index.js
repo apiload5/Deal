@@ -1,4 +1,4 @@
-// api/index.js - Root API Handler
+// api/index.js
 export default function handler(req, res) {
     res.status(200).json({
         success: true,
@@ -6,6 +6,7 @@ export default function handler(req, res) {
         version: '2.0.0',
         timestamp: new Date().toISOString(),
         endpoints: {
+            health: '/api/health',
             properties: '/api/properties',
             agencies: '/api/agencies',
             builders: '/api/builders',
