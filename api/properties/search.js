@@ -1,6 +1,6 @@
-import { supabase } from '../_lib/supabase.js';
-import { cache, withCache } from '../_lib/cache.js';
-import { authMiddleware } from '../_lib/auth.js';
+import { supabase } from './supabase.js';
+import { cache, withCache } from './cache.js';
+import { authMiddleware } from './auth.js';
 
 // AI Search handler with cache
 export default async function handler(req, res) {

@@ -1,5 +1,5 @@
-import { supabase } from '../_lib/supabase.js';
-import { authMiddleware } from '../_lib/auth.js';
+import { supabase } from './supabase.js';
+import { authMiddleware } from './auth.js';
 import crypto from 'crypto';
 
 const RAPIDPAISA_MERCHANT_ID = process.env.RAPIDPAISA_MERCHANT_ID;

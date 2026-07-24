@@ -1,5 +1,5 @@
-import { uploadToCloudinary, deleteFromCloudinary } from '../_lib/cloudinary.js';
-import { authMiddleware } from '../_lib/auth.js';
+import { uploadToCloudinary, deleteFromCloudinary } from './cloudinary.js';
+import { authMiddleware } from './auth.js';
 
 export default async function handler(req, res) {
     switch(req.method) {

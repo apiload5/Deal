@@ -1,6 +1,6 @@
-import { supabase } from '../_lib/supabase.js';
-import { authMiddleware, adminMiddleware } from '../_lib/auth.js';
-import { cache } from '../_lib/cache.js';
+import { supabase } from './supabase.js';
+import { authMiddleware, adminMiddleware } from './auth.js';
+import { cache } from './cache.js';
 
 export default async function handler(req, res) {
     switch(req.method) {

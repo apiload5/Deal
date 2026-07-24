@@ -1,5 +1,5 @@
-import { supabase } from '../_lib/supabase.js';
-import { adminMiddleware } from '../_lib/auth.js';
+import { supabase } from './supabase.js';
+import { adminMiddleware } from './auth.js';
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {

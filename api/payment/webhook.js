@@ -1,4 +1,4 @@
-import { supabase } from '../_lib/supabase.js';
+import { supabase } from './supabase.js';
 import crypto from 'crypto';
 
 const RAPIDPAISA_SECRET_KEY = process.env.RAPIDPAISA_SECRET_KEY;

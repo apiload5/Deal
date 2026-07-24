@@ -1,5 +1,5 @@
-import { supabase } from '../_lib/supabase.js';
-import { cache, withCache } from '../_lib/cache.js';
+import { supabase } from './supabase.js';
+import { cache, withCache } from './cache.js';
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
