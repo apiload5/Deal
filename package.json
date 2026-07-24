@@ -2,6 +2,7 @@
   "name": "dealpk",
   "version": "2.0.0",
   "description": "Pakistan's Premier Property Platform",
+  "type": "module",
   "main": "api/index.js",
   "scripts": {
     "build": "echo 'Build complete'",
