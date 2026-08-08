@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /properties
+Allow: /properties/*
+Allow: /agencies
+Allow: /agencies/*
+Allow: /builders
+Allow: /builders/*
+Allow: /projects
+Allow: /projects/*
+Allow: /agents
+Allow: /agents/*
+Allow: /blog
+Allow: /blog/*
+Allow: /hiring
+Allow: /hiring/*
+
+# Security Restriction: Strictly prevent search engines from indexing the Admin Panel
+Disallow: /admin
+Disallow: /admin/
+Disallow: /*admin*
+Disallow: /*admin
+
+Sitemap: https://dealfast.pk/sitemap.xml

@@ -1,0 +1,131 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'admin' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Connection Check for App Initialization
+    match /connectionTest/{checkId} {
+      allow read, write: if true;
+    }
+
+    // Publicly Browseable Real Estate Content (Read: Public, Write: Authenticated or Admin)
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /jobPosts/{jobId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /agencies/{agencyId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /builders/{builderId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /agents/{agentId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isSignedIn() || isAdmin();
+    }
+
+    match /notifications/{notifId} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /invoices/{invoiceId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // User Data & Profiles (Protected - Only owner or admin can read private user details)
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || resource.data.id == request.auth.uid || isAdmin());
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // Escrow & Sensitive Financial Transactions (Protected - Only buyer, seller or admin)
+    match /bookings/{bookingId} {
+      allow read: if isSignedIn() && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // Personal User Wallets & Balance (Strictly Private - Only wallet owner or admin)
+    match /wallets/{walletId} {
+      allow read, write: if isSignedIn() && (walletId == request.auth.uid || resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /dealRooms/{dealId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // Identity & KYC Records (Strictly Confidential - Only owner or admin)
+    match /kycRecords/{kycId} {
+      allow create: if isSignedIn();
+      allow read, update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Real-Time Chat System (Requires Auth)
+    match /chatRooms/{roomId} {
+      allow read, write: if isSignedIn();
+      
+      match /messages/{messageId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // Staff Users & Administrative Portals (Strictly Admin Controlled)
+    match /staffUsers/{staffId} {
+      allow read: if isSignedIn() && (request.auth.uid == staffId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+
