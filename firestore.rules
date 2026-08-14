@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'admin' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // Connection Check for App Initialization
+    match /connectionTest/{checkId} {
+      allow read, write: if true;
+    }
+
+    // Publicly Browseable Real Estate Content & Shared Platform Collections
+    match /properties/{propertyId} {
+      allow read, write: if true;
+    }
+
+    match /projects/{projectId} {
+      allow read, write: if true;
+    }
+
+    match /jobPosts/{jobId} {
+      allow read, write: if true;
+    }
+
+    match /jobs/{jobId} {
+      allow read, write: if true;
+    }
+
+    match /agencies/{agencyId} {
+      allow read, write: if true;
+    }
+
+    match /builders/{builderId} {
+      allow read, write: if true;
+    }
+
+    match /agents/{agentId} {
+      allow read, write: if true;
+    }
+
+    match /blogs/{blogId} {
+      allow read, write: if true;
+    }
+
+    match /notifications/{notifId} {
+      allow read, write: if true;
+    }
+
+    match /invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    match /inquiries/{inqId} {
+      allow read, write: if true;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // User Data & Profiles
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Escrow & Sensitive Financial Transactions
+    match /bookings/{bookingId} {
+      allow read, write: if true;
+    }
+
+    // Personal User Wallets & Balance
+    match /wallets/{walletId} {
+      allow read, write: if true;
+    }
+
+    match /dealRooms/{dealId} {
+      allow read, write: if true;
+    }
+
+    // Identity & KYC Records
+    match /kycRecords/{kycId} {
+      allow read, write: if true;
+    }
+
+    // Real-Time Chat System
+    match /chatRooms/{roomId} {
+      allow read, write: if true;
+      
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // WebRTC Signaling Calls (Firestore Room & ICE Candidates)
+    match /calls/{callId} {
+      allow read, write: if true;
+      match /{document=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // Staff Users & Administrative Portals (Strictly Admin Controlled)
+    match /staffUsers/{staffId} {
+      allow read: if isSignedIn() && (request.auth.uid == staffId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+

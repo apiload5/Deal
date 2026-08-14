@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Property": {
+      "title": "Property",
+      "description": "Real estate property listing",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "price": { "type": "number" },
+        "city": { "type": "string" },
+        "userId": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["title", "price", "city"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Escrow transaction booking",
+      "type": "object",
+      "properties": {
+        "propertyId": { "type": "string" },
+        "buyerId": { "type": "string" },
+        "amountPaid": { "type": "number" },
+        "status": { "type": "string" }
+      }
+    },
+    "User": {
+      "title": "User Profile",
+      "description": "User profile and KYC data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" }
+      }
+    },
+    "ChatRoom": {
+      "title": "Chat Room",
+      "description": "Chat conversation room",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array" }
+      }
+    },
+    "Job": {
+      "title": "Hiring Job/Bounty",
+      "description": "Escrow agent job post",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "budget": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Public property listings"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Escrow bookings"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/chatRooms/{roomId}": {
+      "schema": "ChatRoom",
+      "description": "Chat conversations"
+    },
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Protected agent hiring jobs"
+    }
+  }
+}
