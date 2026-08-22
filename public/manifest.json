@@ -1,0 +1,38 @@
+{
+  "id": "dealfast-pwa-app",
+  "short_name": "DealFast",
+  "name": "DealFast - Escrow Real Estate Pakistan",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "background_color": "#0a0e1a",
+  "theme_color": "#f97316",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Buy, sell, & rent verified properties in Pakistan with 100% Escrow Protection.",
+  "shortcuts": [
+    {
+      "name": "Search Properties",
+      "url": "/#properties",
+      "description": "Browse verified DHA & Bahria listings"
+    },
+    {
+      "name": "My Escrow Deals",
+      "url": "/#dashboard",
+      "description": "View token bookings & payments"
+    }
+  ]
+}
