@@ -1,0 +1,247 @@
+import React, { useState } from 'react';
+import {
+  Heart,
+  Eye,
+  Bed,
+  Bath,
+  Maximize2,
+  ShieldCheck,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  Phone,
+  MessageSquare,
+  Zap,
+  Star,
+  Award,
+  Building2,
+  Building,
+  UserCheck
+} from 'lucide-react';
+import { Property } from '../../types';
+import { store } from '../../lib/store';
+import { DealLogo } from '../common/DealLogo';
+import { WatermarkedImage } from '../../utils/imageWatermark';
+import { calculateRelevanceScore, getUserAffinities, trackPropertyInteraction } from '../../lib/recommendation';
+
+interface PropertyCardProps {
+  property: Property;
+  onSelectProperty: (p: Property) => void;
+  onOpenBookingModal: (p: Property) => void;
+  onOpenChatWithAgent: (agentId: string, agentName: string, pId?: string, pTitle?: string) => void;
+  viewMode?: 'grid' | 'list';
+}
+
+export const PropertyCard: React.FC<PropertyCardProps> = ({
+  property,
+  onSelectProperty,
+  onOpenBookingModal,
+  onOpenChatWithAgent,
+  viewMode = 'grid'
+}) => {
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const isFav = store.isFavorite(property.id);
+
+  const userAffinities = getUserAffinities();
+  const relevanceScore = calculateRelevanceScore(property, userAffinities);
+
+  const handleToggleFav = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    store.toggleFavorite(property.id);
+    trackPropertyInteraction(property, 3);
+  };
+
+  const nextImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (property.images.length > 0) {
+      setCurrentImgIndex((currentImgIndex + 1) % property.images.length);
+    }
+  };
+
+  const prevImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (property.images.length > 0) {
+      setCurrentImgIndex((currentImgIndex - 1 + property.images.length) % property.images.length);
+    }
+  };
+
+  const isList = viewMode === 'list';
+
+  return (
+    <div
+      onClick={() => onSelectProperty(property)}
+      className={`group glass-card rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 cursor-pointer ${
+        isList ? 'flex flex-col md:flex-row' : 'flex flex-col'
+      } ${
+        property.isPremium
+          ? 'border-amber-500/40 shadow-xl shadow-amber-500/5'
+          : 'border-slate-800 hover:border-orange-500/50'
+      }`}
+    >
+      {/* Image Slider Header */}
+      <div className={`relative bg-slate-900 overflow-hidden shrink-0 ${
+        isList ? 'w-full md:w-80 h-56 md:h-full' : 'h-52 w-full'
+      }`}>
+        <WatermarkedImage
+          src={property.images[currentImgIndex] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200'}
+          alt={property.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 min-h-[200px]"
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-transparent to-black/30" />
+
+        {/* Image Arrows */}
+        {property.images.length > 1 && (
+          <div className="absolute inset-y-0 inset-x-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={prevImg}
+              className="p-1 rounded-full bg-black/60 text-white hover:bg-orange-500 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={nextImg}
+              className="p-1 rounded-full bg-black/60 text-white hover:bg-orange-500 transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Badges Top Left */}
+        <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 z-20">
+          {(property.isFeatured || property.isPremium) && (
+            <span className="inline-flex items-center justify-center px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 shadow-lg border border-yellow-200 ring-2 ring-amber-500/30 whitespace-nowrap leading-none">
+              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-slate-950 fill-slate-950 shrink-0" /> FEATURED TOP AD
+            </span>
+          )}
+          {property.purpose === 'sale' ? (
+            <span className="inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold uppercase bg-orange-500 text-white shadow-md whitespace-nowrap leading-none">
+              For Sale
+            </span>
+          ) : (
+            <span className="inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold uppercase bg-blue-600 text-white shadow-md whitespace-nowrap leading-none">
+              For Rent
+            </span>
+          )}
+        </div>
+
+        {/* Favorite Heart Top Right */}
+        <button
+          onClick={handleToggleFav}
+          className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/70 border border-slate-800 text-slate-300 hover:text-red-500 transition-colors shadow-lg"
+        >
+          <Heart className={`w-4 h-4 ${isFav ? 'fill-red-500 text-red-500' : ''}`} />
+        </button>
+
+        {/* Escrow Badge Bottom Right */}
+        <div className="absolute bottom-2 right-2 bg-slate-950/80 backdrop-blur-md border border-amber-500/30 px-2 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] font-semibold text-amber-400 inline-flex items-center justify-center whitespace-nowrap leading-none">
+          <ShieldCheck className="w-3 h-3 mr-1 text-amber-400 shrink-0" /> Escrow Protected
+        </div>
+      </div>
+
+      {/* Card Content Body */}
+      <div className={`p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3 ${isList ? 'md:py-4' : ''}`}>
+        
+        {/* Price & Location */}
+        <div>
+          <div className="flex items-baseline justify-between gap-2">
+            <h3 className="text-lg sm:text-xl font-black text-white gradient-text">
+              {property.priceFormatted}
+            </h3>
+            <span className="text-[10px] text-slate-400 font-medium flex items-center shrink-0">
+              <Eye className="w-3 h-3 mr-1 text-slate-500" /> {property.views} views
+            </span>
+          </div>
+
+          <p className="text-xs sm:text-sm font-bold text-slate-200 mt-1 group-hover:text-orange-400 transition-colors line-clamp-2">
+            {property.title}
+          </p>
+
+          <p className="text-[11px] text-slate-400 flex items-center mt-1.5">
+            <MapPin className="w-3.5 h-3.5 mr-1 text-orange-400 shrink-0" />
+            <span className="truncate">{property.area}, {property.city}</span>
+          </p>
+        </div>
+
+        {/* Specs Pill Grid */}
+        <div className="grid grid-cols-3 gap-2 py-2 border-y border-slate-800/80 text-xs text-slate-300">
+          <div className="flex items-center space-x-1.5">
+            <Bed className="w-3.5 h-3.5 text-orange-400" />
+            <span className="font-semibold">{property.beds} Beds</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <Bath className="w-3.5 h-3.5 text-orange-400" />
+            <span className="font-semibold">{property.baths} Baths</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <Maximize2 className="w-3.5 h-3.5 text-orange-400" />
+            <span className="font-semibold">{property.sqft} sqft</span>
+          </div>
+        </div>
+
+        {/* Lister Info & Quick Booking Buttons */}
+        <div className="pt-1 flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center space-x-2 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-slate-800 text-orange-400 font-bold flex items-center justify-center text-xs shrink-0 border border-slate-700 overflow-hidden">
+              {property.ownerAvatar ? (
+                <img src={property.ownerAvatar} alt={property.ownerName || 'Owner'} className="w-full h-full object-cover" />
+              ) : (
+                (property.ownerName || property.agencyName || 'A').charAt(0).toUpperCase()
+              )}
+            </div>
+            <div className="truncate">
+              <p className="text-[11px] font-bold text-slate-300 truncate">
+                {property.userRole === 'agency' || property.userRole === 'builder'
+                  ? (property.agencyName || property.ownerName || 'Verified Partner')
+                  : (property.ownerName || property.agencyName || 'Property Lister')}
+              </p>
+              {property.userRole === 'user' || !property.userRole ? (
+                <p className="text-[9px] text-emerald-400 font-semibold flex items-center gap-0.5">
+                  <ShieldCheck className="w-2.5 h-2.5 shrink-0" /> Direct Owner (0% Comm)
+                </p>
+              ) : property.userRole === 'agent' ? (
+                <p className="text-[9px] text-blue-400 font-semibold flex items-center gap-0.5">
+                  <Award className="w-2.5 h-2.5 shrink-0" /> {property.agencyName || 'Certified Agent'}
+                </p>
+              ) : property.userRole === 'builder' ? (
+                <p className="text-[9px] text-purple-400 font-semibold flex items-center gap-0.5">
+                  <Building2 className="w-2.5 h-2.5 shrink-0" /> Builder / Developer
+                </p>
+              ) : (
+                <p className="text-[9px] text-amber-400 font-semibold flex items-center gap-0.5">
+                  <Building className="w-2.5 h-2.5 shrink-0" /> Real Estate Agency
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenChatWithAgent(property.userId, property.ownerName, property.id, property.title);
+              }}
+              className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-[10px] sm:text-xs font-bold shrink-0 leading-none"
+              title="Chat with Seller"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+              <span className="hidden sm:inline">Chat</span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenBookingModal(property);
+              }}
+              className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl gradient-btn text-white text-[10px] sm:text-[11px] font-bold transition-all shadow-md shadow-orange-500/20 shrink-0 whitespace-nowrap leading-none"
+            >
+              <span>Book Token (10%)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
